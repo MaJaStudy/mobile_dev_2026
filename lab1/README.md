@@ -57,6 +57,7 @@
 
 ## Скриншоты
 ![Работающий Проект](WorkingApp.png)  
+<br>
 ![Структура Проекта](Structure.png)
 
 ## Listing
