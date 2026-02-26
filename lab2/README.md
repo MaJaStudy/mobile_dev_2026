@@ -1,76 +1,84 @@
 # Лабораторная работа №2
-## Написание консольных утилит на Kotlin внутри Android проекта. Расчеты, работа со строками. Подготовка классов данных для будущего приложения
 
-**Длительность:** 1 час 30 минут  
-**Цель работы:** Научиться создавать классы данных и функции-утилиты на Kotlin в контексте Android-проекта, освоить базовые приёмы работы со строками и числами, познакомиться с юнит-тестированием для проверки корректности кода.
+<div align="center">
 
----
+**МИНИСТЕРСТВО НАУКИ И ВЫСШЕГО ОБРАЗОВАНИЯ РОССИЙСКОЙ ФЕДЕРАЦИИ**  
+**ФЕДЕРАЛЬНОЕ ГОСУДАРСТВЕННОЕ БЮДЖЕТНОЕ ОБРАЗОВАТЕЛЬНОЕ УЧРЕЖДЕНИЕ ВЫСШЕГО ОБРАЗОВАНИЯ**  
+**«САХАЛИНСКИЙ ГОСУДАРСТВЕННЫЙ УНИВЕРСИТЕТ»**
 
-## 1. Теоретическая справка
+<br>
+<br>
 
-### 1.1. Классы данных (data class) в Kotlin
-Классы данных предназначены для хранения состояния. Компилятор автоматически генерирует для них полезные методы: `toString()`, `equals()`, `hashCode()`, `copy()`.
+Институт естественных наук и техносферной безопасности  
+Кафедра информатики  
+**Пахомов Виктор Васильевич**
 
-```kotlin
-data class Book(
-    val title: String,
-    val author: String,
-    val year: Int,
-    val price: Double
-)
-```
+<br>
+<br>
+<br>
+<br>
 
-### 1.2. Работа со строками
-Kotlin предоставляет удобные функции для работы со строками: `split`, `substring`, `trim`, шаблоны (`"текст ${переменная}"`), функции проверки (`isNullOrBlank`, `contains`).
+Лабораторная работа №2  
+**«Написание консольных утилит на Kotlin внутри Android проекта. Расчеты, работа со строками. Подготовка классов данных для будущего приложения»**  
+01.03.02 Прикладная математика и информатика  
+3 Курс
 
-### 1.3. Функции расширения (extension functions)
-Позволяют добавлять новые функции к существующим классам.
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 
-```kotlin
-fun String.isEmailValid(): Boolean {
-    return this.contains("@") && this.contains(".")
-}
-```
+<div align="right">
+Научный руководитель<br>
+Соболев Евгений Игоревич
+</div>
 
-### 1.4. Юнит-тестирование (JUnit)
-Для проверки работоспособности кода без запуска всего приложения используются тесты. Тесты помещаются в директорию `src/test/java` и запускаются на JVM.
+<br>
+<br>
+<br>
 
-Пример теста:
-```kotlin
-import org.junit.Assert.*
-import org.junit.Test
+г. Южно-Сахалинск  
+2026 г.
 
-class UtilsTest {
-    @Test
-    fun testSum() {
-        assertEquals(4, 2 + 2)
-    }
-}
-```
-
----
-
-## 2. Оборудование и программное обеспечение
-
-- Персональный компьютер с ОС Windows / macOS / Linux.
-- Android Studio (проект, созданный в лабораторной работе №1).
-- Эмулятор или реальное устройство не требуется – тесты выполняются на компьютере.
+</div>
 
 ---
 
-## 3. Порядок выполнения работы
+## Цель Работы
 
-### Этап 1. Подготовка проекта (5 мин)
+Научиться создавать классы данных и функции-утилиты на Kotlin в контексте Android-проекта, освоить базовые приёмы работы со строками и числами, познакомиться с юнит-тестированием для проверки корректности кода.
 
-Откройте проект `MyFirstApp`, созданный на прошлом занятии. Убедитесь, что проект успешно собирается. В структуре проекта обратите внимание на наличие папки `app/src/test/java` – в ней будут размещаться тесты.
+## Индивидуальное задание: Конвертер валют
 
-### Этап 2. Создание пакета для утилит (5 мин)
+Было выбрано индивидуальное задание **«Конвертер валют»**. Требовалось написать функции конвертации рублей в доллары и евро по заданному курсу, создать класс `CurrencyConverter` с соответствующими методами и покрыть его тестами.
 
-В папке `app/src/main/java/com/example/myfirstapp` создайте новый пакет `utils` (правой кнопкой на `com.example.myfirstapp` → New → Package). В этом пакете будут храниться классы данных и вспомогательные функции.
+## Скриншоты
 
-### Этап 3. Создание класса данных (10 мин)
+![Результат выполнения тестов](TestsPassed.png)  
+*Рисунок 1 – Успешное прохождение всех юнит-тестов*
 
-Создайте класс данных `Book` в пакете `utils` (New → Kotlin Class/File → выберите Data Class).
+<br>
+
+![Работа приложения](WorkingApp.png)  
+*Рисунок 2 – Демонстрация работы конвертера в интерфейсе приложения*
+
+<br>
+
+![Структура проекта](Structure.png)
+*Рисунок 3 – Структура проекта с пакетом utils и тестами*
+
+## Листинги
+
+### 1. Класс данных Book (`Book.kt`)
 
 ```kotlin
 package com.example.myfirstapp.utils
@@ -83,9 +91,7 @@ data class Book(
 )
 ```
 
-### Этап 4. Написание функций-утилит (15 мин)
-
-В том же пакете создайте файл `StringUtils.kt` (New → Kotlin Class/File → File) и добавьте функции для работы со строками.
+### 2. Утилиты для работы со строками (`StringUtils.kt`)
 
 ```kotlin
 package com.example.myfirstapp.utils
@@ -113,14 +119,45 @@ fun applyDiscount(price: Double, discountPercent: Double): Double {
 }
 ```
 
-### Этап 5. Написание юнит-тестов (25 мин)
+### 3. Класс CurrencyConverter (`CurrencyConverter.kt`)
 
-Теперь напишем тесты для проверки созданных функций.
+```kotlin
+package com.example.myfirstapp.utils
 
-1. Откройте папку `app/src/test/java`. Создайте в ней пакет с тем же именем (`com.example.myfirstapp.utils`).
-2. В этом пакете создайте новый Kotlin класс `StringUtilsTest` (New → Kotlin Class/File → Class).
+class CurrencyConverter(
+    private val usdRate: Double,
+    private val eurRate: Double
+) {
+    fun rubToUsd(rub: Double): Double {
+        require(rub >= 0) { "Сумма не может быть отрицательной" }
+        return rub / usdRate
+    }
+    fun usdToRub(usd: Double): Double {
+        require(usd >= 0) { "Сумма не может быть отрицательной" }
+        return usd * usdRate
+    }
+    fun rubToEur(rub: Double): Double {
+        require(rub >= 0) { "Сумма не может быть отрицательной" }
+        return rub / eurRate
+    }
+    fun eurToRub(eur: Double): Double {
+        require(eur >= 0) { "Сумма не может быть отрицательной" }
+        return eur * eurRate
+    }
+    fun usdToEur(usd: Double): Double {
+        require(usd >= 0) { "Сумма не может быть отрицательной" }
+        val rub = usdToRub(usd)
+        return rubToEur(rub)
+    }
+    fun eurToUsd(eur: Double): Double {
+        require(eur >= 0) { "Сумма не может быть отрицательной" }
+        val rub = eurToRub(eur)
+        return rubToUsd(rub)
+    }
+}
+```
 
-Добавьте следующие тесты:
+### 4. Тесты для StringUtils (`StringUtilsTest.kt`)
 
 ```kotlin
 package com.example.myfirstapp.utils
@@ -183,80 +220,278 @@ class StringUtilsTest {
 }
 ```
 
-### Этап 6. Запуск тестов и анализ результатов (10 мин)
-
-1. Чтобы запустить все тесты, щелкните правой кнопкой мыши на папке `src/test/java` и выберите **Run Tests** (или на конкретном файле теста).
-2. Внизу откроется окно **Run** с результатами. Все тесты должны быть зелёными (успешными).
-3. Если какой-то тест упал, проанализируйте ошибку и исправьте код функций.
-
-### Этап 7. Интеграция в Android-приложение (опционально, 10 мин)
-
-Для наглядности можно вывести результаты работы утилит в интерфейс приложения. Добавьте в `activity_main.xml` несколько `TextView` и в `MainActivity` вызовите утилиты, установив текст.
-
-Пример кода в `MainActivity.kt` (после `setContentView`):
+### 5. Тесты для CurrencyConverter (`CurrencyConverterTest.kt`)
 
 ```kotlin
-val book = Book("Война и мир", "Толстой Лев Николаевич", 1869, 500.0)
-val formattedAuthor = formatAuthorName(book.author)
-val discountedPrice = applyDiscount(book.price, 15.0)
+package com.example.myfirstapp.utils
 
-findViewById<TextView>(R.id.textView1).text = "Книга: ${book.title}"
-findViewById<TextView>(R.id.textView2).text = "Автор: $formattedAuthor"
-findViewById<TextView>(R.id.textView3).text = "Цена со скидкой: $discountedPrice руб."
+import org.junit.Assert.*
+import org.junit.Before
+import org.junit.Test
+
+class CurrencyConverterTest {
+
+    private lateinit var converter: CurrencyConverter
+
+    @Before
+    fun setUp() {
+        // Инициализация перед каждым тестом
+        // Курсы: 1 USD = 90 RUB, 1 EUR = 100 RUB
+        converter = CurrencyConverter(90.0, 100.0)
+    }
+
+    @Test
+    fun rubToUsd_positiveAmount() {
+        val result = converter.rubToUsd(180.0)
+        assertEquals(2.0, result, 0.001)
+    }
+
+    @Test
+    fun rubToUsd_zeroAmount() {
+        val result = converter.rubToUsd(0.0)
+        assertEquals(0.0, result, 0.001)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun rubToUsd_negativeAmount() {
+        converter.rubToUsd(-100.0)
+    }
+
+    @Test
+    fun usdToRub_positiveAmount() {
+        val result = converter.usdToRub(5.0)
+        assertEquals(450.0, result, 0.001)
+    }
+
+    @Test
+    fun rubToEur_positiveAmount() {
+        val result = converter.rubToEur(250.0)
+        assertEquals(2.5, result, 0.001)
+    }
+
+    @Test
+    fun eurToRub_positiveAmount() {
+        val result = converter.eurToRub(3.0)
+        assertEquals(300.0, result, 0.001)
+    }
+
+    @Test
+    fun usdToEur_positiveAmount() {
+        val result = converter.usdToEur(100.0)
+        // 100 USD = 9000 RUB = 90 EUR
+        assertEquals(90.0, result, 0.001)
+    }
+
+    @Test
+    fun eurToUsd_positiveAmount() {
+        val result = converter.eurToUsd(100.0)
+        // 100 EUR = 10000 RUB = 111.111... USD
+        assertEquals(111.111, result, 0.001)
+    }
+
+    @Test
+    fun multipleConversions_shouldReturnOriginalValue() {
+        val rubAmount = 1000.0
+        val usdAmount = converter.rubToUsd(rubAmount)
+        val rubBack = converter.usdToRub(usdAmount)
+        assertEquals(rubAmount, rubBack, 0.001)
+    }
+
+    @Test
+    fun differentExchangeRates() {
+        val customConverter = CurrencyConverter(75.0, 85.0)
+        assertEquals(2.0, customConverter.rubToUsd(150.0), 0.001)
+        assertEquals(150.0, customConverter.usdToRub(2.0), 0.001)
+    }
+}
 ```
 
-Не забудьте добавить `import` и соответствующие `TextView` в разметку с id `textView1`, `textView2`, `textView3`.
+### 6. Разметка activity_main.xml
 
-Запустите приложение на эмуляторе, чтобы увидеть результат.
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    tools:context=".MainActivity">
 
----
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/greeting"
+        android:textColor="#FF99D3"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.366" />
 
-## 4. Индивидуальные задания (вариативно)
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="140dp"
+        android:text="Загрузка..."
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.332" />
 
-Выберите одно из заданий для самостоятельной работы:
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="210dp"
+        android:text="Конвертер валют"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.309" />
 
-1. **Класс "Студент"**  
-   Создайте data class `Student` (имя, фамилия, группа, средний балл). Напишите функцию, которая возвращает строку вида "Иванов И. (группа ПИ-101)" и функцию для определения статуса (отличник/хорошист/троечник) на основе среднего балла. Покройте тестами.
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="250dp"
+        android:text="..."
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.332" />
 
-2. **Конвертер валют**  
-   Напишите функцию конвертации рублей в доллары и евро по заданному курсу. Создайте класс `CurrencyConverter` с методами `rubToUsd`, `usdToRub` и т.д. Курсы передавайте как параметры. Напишите тесты.
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
+        android:text="@string/second_greeting"
+        android:textColor="#02B0FF"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.351" />
 
-3. **Валидатор пароля**  
-   Напишите функцию, проверяющую сложность пароля: длина не менее 8 символов, наличие цифр, заглавных букв и спецсимволов. Возвращайте строку с описанием ошибки или "Пароль надёжный". Покройте тестами.
+</androidx.constraintlayout.widget.ConstraintLayout>
+```
 
----
+### 7. MainActivity.kt
 
-## 5. Контрольные вопросы
+```kotlin
+package com.example.myfirstapp
 
-1. Для чего в Kotlin используются data class?
-2. Чем отличается функция расширения от обычной функции?
-3. Как запустить юнит-тесты в Android Studio?
-4. Что такое `assertEquals` и для чего нужен третий параметр (дельта) при сравнении вещественных чисел?
-5. В какой директории проекта хранятся тесты, выполняющиеся на JVM?
+import android.os.Bundle
+import android.widget.TextView
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import com.example.myfirstapp.utils.Book
+import com.example.myfirstapp.utils.formatAuthorName
+import com.example.myfirstapp.utils.applyDiscount
+import com.example.myfirstapp.utils.CurrencyConverter
 
----
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContentView(R.layout.activity_main)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
 
-## 6. Требования к отчёту
+        val book = Book("Война и мир", "Толстой Лев Николаевич", 1869, 500.0)
+        val formattedAuthor = formatAuthorName(book.author)
+        val discountedPrice = applyDiscount(book.price, 15.0)
 
-Отчёт должен содержать:
-- Титульный лист с названием работы, ФИО, группой.
-- Цель работы.
-- Листинги созданных классов данных и функций-утилит.
-- Листинги юнит-тестов.
-- Скриншот успешного выполнения тестов (зелёная полоса).
-- (Если выполнялась интеграция с UI) скриншот приложения с отображением результатов.
-- Ответы на контрольные вопросы.
-- Вывод по работе.
+        findViewById<TextView>(R.id.textView1).text = "Книга: ${book.title}"
+        findViewById<TextView>(R.id.textView2).text = "Автор: $formattedAuthor"
+        findViewById<TextView>(R.id.textView3).text = "Цена со скидкой: $discountedPrice руб."
 
----
+        val converter = CurrencyConverter(90.0, 100.0) // 1 USD = 90 RUB, 1 EUR = 100 RUB
+        val rubAmount = 1000.0
 
-## 7. Возможные ошибки и их решение
+        val usdAmount = converter.rubToUsd(rubAmount)
+        val eurAmount = converter.rubToEur(rubAmount)
 
-- **Тесты не компилируются, не видят классы из основного кода** – убедитесь, что в тестовом файле указан правильный импорт пакета (например, `import com.example.myfirstapp.utils.*`).
-- **Ошибка "JUnit not found"** – проверьте, что в файле `build.gradle` (Module) есть зависимость `testImplementation 'junit:junit:4.13.2'`. Если её нет, добавьте и сделайте Sync.
-- **Тесты с вещественными числами падают из-за погрешности** – используйте `assertEquals(expected, actual, delta)`, где delta – допустимая погрешность (например, 0.001).
-- **Функция `require` выбрасывает исключение, но тест не ловит** – убедитесь, что в тесте используется атрибут `expected` в аннотации `@Test(expected = IllegalArgumentException::class)`.
+        val rubFormat = "%.2f руб".format(rubAmount)
+        val usdFormat = "%.2f USD".format(usdAmount)
+        val eurFormat = "%.2f EUR".format(eurAmount)
 
----
+        findViewById<TextView>(R.id.textView4).text = "Конвертер валют:"
+        findViewById<TextView>(R.id.textView5).text = "$rubFormat → $usdFormat\n$rubFormat → $eurFormat"
+    }
+}
+```
 
-**Успешной работы!**
+## Ответы на контрольные вопросы
+
+**1. Для чего в Kotlin используются data class?**  
+Data class (классы данных) используются для хранения состояния. Компилятор автоматически генерирует для них полезные методы: `toString()`, `equals()`, `hashCode()` и `copy()`. Это избавляет от необходимости писать шаблонный код и делает классы удобными для хранения данных, например, для модели `Book` с полями title, author, year, price.
+
+**2. Чем отличается функция расширения от обычной функции?**  
+Функция расширения (extension function) позволяет добавить новую функциональность к существующему классу без наследования. Она вызывается как метод класса (например, `"test".isValidEmail()`), но при этом не может обращаться к приватным полям класса. Обычная функция — это независимая функция, не привязанная к конкретному классу и вызываемая обычным способом (например, `formatAuthorName("Толстой Лев")`).
+
+**3. Как запустить юнит-тесты в Android Studio?**  
+Существует несколько способов:
+- Щелкнуть правой кнопкой мыши на папке `src/test/java` и выбрать **Run Tests**
+- Открыть конкретный тестовый файл и нажать на зелёный треугольник рядом с именем класса или отдельным тестом
+- Через терминал выполнить команду `./gradlew test`
+Внизу откроется окно **Run** с результатами выполнения тестов.
+
+**4. Что такое assertEquals и для чего нужен третий параметр (дельта) при сравнении вещественных чисел?**  
+`assertEquals` — это метод библиотеки JUnit для проверки равенства двух значений в тестах. Третий параметр (дельта) используется при сравнении вещественных чисел (Double, Float) из-за особенностей их представления в компьютере. Из-за погрешностей вычислений 0.1 + 0.2 может быть не точно равно 0.3. Дельта задаёт допустимую погрешность (например, 0.001), в пределах которой числа считаются равными.
+
+**5. В какой директории проекта хранятся тесты, выполняющиеся на JVM?**  
+Тесты, выполняющиеся на JVM, хранятся в директории `app/src/test/java/`. Эта директория предназначена для юнит-тестов, которые запускаются на локальной машине без необходимости эмулятора или реального устройства.
+
+## Вывод
+
+В ходе лабораторной работы был создан набор утилит для работы со строками и числами в Android-проекте.
+
+Были изучены и применены на практике:
+- **Классы данных (data class)** — создан класс `Book` для хранения информации о книге
+- **Функции расширения** — реализована функция `isValidEmail()` как расширение для String
+- **Обработка строк** — реализовано форматирование ФИО автора в формат "Фамилия И.О."
+- **Математические расчёты** — созданы функции для применения скидки и конвертации валют
+- **Обработка исключений** — использована функция `require` для валидации входных данных
+
+Особое внимание было уделено **юнит-тестированию**:
+- Созданы тестовые классы `StringUtilsTest` и `CurrencyConverterTest`
+- Написано 20 тестов, покрывающих нормальные, граничные и исключительные ситуации
+- Все тесты успешно выполняются (зелёная полоса), что подтверждает корректность реализованных функций
+
+Для индивидуального задания **«Конвертер валют»** был разработан класс `CurrencyConverter` с шестью методами конвертации (RUB↔USD, RUB↔EUR, USD↔EUR через кросс-курс). Реализована проверка на отрицательные суммы через `require`. Написано 12 тестов, проверяющих все методы конвертера.
+
+В интерфейс приложения были выведены результаты работы утилит: информация о книге со скидкой и конвертация 1000 рублей в доллары и евро. Приложение успешно запускается на эмуляторе и корректно отображает все данные.
+
+Таким образом, цель работы достигнута: получены практические навыки создания классов данных, функций-утилит и юнит-тестов в контексте Android-разработки на Kotlin.
+
+## Authors
+
+- [@MaJaStudy](https://github.com/MaJaStudy)
+    - <sub><ins>Пахомов Виктор Васильевич №331</ins></sub>
