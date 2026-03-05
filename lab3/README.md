@@ -1,106 +1,114 @@
 # Лабораторная работа №3
-## Реализация списка объектов с фильтрацией с использованием .map, .filter, .sortedBy
 
-**Длительность:** 1 час 30 минут  
-**Цель работы:** Изучить функциональные методы обработки коллекций в Kotlin (`filter`, `map`, `sortedBy`) на примере списка объектов и вывести результаты в интерфейс Android-приложения.
+<div align="center">
+
+**МИНИСТЕРСТВО НАУКИ И ВЫСШЕГО ОБРАЗОВАНИЯ РОССИЙСКОЙ ФЕДЕРАЦИИ**  
+**ФЕДЕРАЛЬНОЕ ГОСУДАРСТВЕННОЕ БЮДЖЕТНОЕ ОБРАЗОВАТЕЛЬНОЕ УЧРЕЖДЕНИЕ ВЫСШЕГО ОБРАЗОВАНИЯ**  
+**«САХАЛИНСКИЙ ГОСУДАРСТВЕННЫЙ УНИВЕРСИТЕТ»**
+
+<br>
+<br>
+
+Институт естественных наук и техносферной безопасности  
+Кафедра информатики  
+**Пахомов Виктор Васильевич**
+
+<br>
+<br>
+<br>
+<br>
+
+Лабораторная работа №3  
+**«Реализация списка объектов с фильтрацией с использованием .map, .filter, .sortedBy»**  
+01.03.02 Прикладная математика и информатика  
+3 Курс
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<div align="right">
+Научный руководитель<br>
+Соболев Евгений Игоревич
+</div>
+
+<br>
+<br>
+<br>
+
+г. Южно-Сахалинск  
+2026 г.
+
+</div>
 
 ---
 
-## 1. Теоретическая справка
+## Цель Работы
 
-### 1.1. Функции высшего порядка для коллекций
-Kotlin предоставляет богатый набор функций для работы с коллекциями, которые принимают лямбда-выражения:
+Изучить функциональные методы обработки коллекций в Kotlin (`filter`, `map`, `sortedBy`) на примере списка объектов и вывести результаты в интерфейс Android-приложения.
 
-- **`filter`** – возвращает список, содержащий только элементы, удовлетворяющие условию.
-  ```kotlin
-  val numbers = listOf(1, 2, 3, 4, 5)
-  val even = numbers.filter { it % 2 == 0 } // [2, 4]
-  ```
+## Индивидуальное задание: Список фильмов
 
-- **`map`** – преобразует каждый элемент коллекции по заданному правилу, возвращая новый список.
-  ```kotlin
-  val numbers = listOf(1, 2, 3)
-  val squares = numbers.map { it * it } // [1, 4, 9]
-  ```
+Было выбрано индивидуальное задание **«Список фильмов»**. Требовалось создать список аниме-фильмов 2025-2026 годов с рейтингами IMDb, отфильтровать фильмы с рейтингом выше 8.0, отсортировать их по году выпуска и вывести список названий с рейтингами.
 
-- **`sortedBy`** – возвращает список, отсортированный по возрастанию значения, возвращаемого селектором.
-  ```kotlin
-  val people = listOf(Person("Alice", 30), Person("Bob", 25))
-  val sorted = people.sortedBy { it.age } // по возрасту
-  ```
+## Скриншоты
 
-Эти функции можно комбинировать в цепочки:
-```kotlin
-val result = list
-    .filter { it.price > 100 }
-    .sortedBy { it.name }
-    .map { it.name }
-```
+![Результат выполнения приложения](AppScreenshot.png)  
+*Рисунок 1 – Работа приложения с отфильтрованными и отсортированными данными*
 
-### 1.2. Лямбда-выражения
-Лямбда – это анонимная функция, которая может быть передана как аргумент. В Kotlin синтаксис:
-```kotlin
-{ параметр -> тело }
-```
-Если параметр один, можно использовать неявное имя `it`.
+<br>
 
----
+![Структура проекта](ProjectStructure.png)  
+*Рисунок 2 – Структура проекта с пакетом models*
 
-## 2. Оборудование и программное обеспечение
+<br>
 
-- Персональный компьютер с ОС Windows / macOS / Linux.
-- Android Studio с проектом (можно использовать проект из лабораторной работы №1 или создать новый).
-- Эмулятор или реальное устройство для запуска приложения.
+![Код с цепочками вызовов](CodeChains.png)
+*Рисунок 3 – Пример цепочки filter + sortedBy + map в коде*
 
----
+## Листинги
 
-## 3. Порядок выполнения работы
-
-### Этап 1. Подготовка проекта (5 мин)
-
-Откройте проект `MyFirstApp` (или создайте новый с Empty Activity). Убедитесь, что проект компилируется.
-
-### Этап 2. Создание класса данных (10 мин)
-
-Создайте data class `Product` в пакете `com.example.myfirstapp.models` (создайте пакет `models`, если его нет). Класс должен содержать поля:
-- `name` (String)
-- `category` (String)
-- `price` (Double)
-- `inStock` (Boolean) – наличие на складе.
+### 1. Класс данных AnimeFilm (`AnimeFilm.kt`)
 
 ```kotlin
 package com.example.myfirstapp.models
 
-data class Product(
+data class AnimeFilm(
     val name: String,
-    val category: String,
-    val price: Double,
-    val inStock: Boolean
+    val genre: String,
+    val rating: Double,
+    val year: Int
 )
 ```
 
-### Этап 3. Подготовка интерфейса (10 мин)
-
-В файле `activity_main.xml` создайте простой интерфейс для отображения трёх списков:
-- Исходный список (кратко)
-- Отфильтрованные товары (в наличии)
-- Отсортированные по цене и преобразованные в строки
-
-Используйте `LinearLayout` (вертикальный) и несколько `TextView` с фиксированными id.
+### 2. Разметка activity_main.xml
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="16dp"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    tools:context=".MainActivity">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Исходные товары:"
+        android:text="Все фильмы:"
         android:textStyle="bold"
         android:textSize="18sp"/>
 
@@ -113,7 +121,7 @@ data class Product(
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Товары в наличии:"
+        android:text="Фильмы с рейтингом выше 8.0 (по году выпуска):"
         android:textStyle="bold"
         android:textSize="18sp"/>
 
@@ -126,7 +134,7 @@ data class Product(
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Товары после сортировки по цене (название и цена):"
+        android:text="Фильмы 2025 года по рейтингу:"
         android:textStyle="bold"
         android:textSize="18sp"/>
 
@@ -138,166 +146,121 @@ data class Product(
 </LinearLayout>
 ```
 
-### Этап 4. Создание списка товаров (10 мин)
-
-В `MainActivity` создайте функцию, которая возвращает тестовый список товаров.
-
-```kotlin
-private fun getProducts(): List<Product> {
-    return listOf(
-        Product("Ноутбук", "Электроника", 75000.0, true),
-        Product("Мышь", "Электроника", 1500.0, true),
-        Product("Книга 'Котлин'", "Книги", 1200.0, false),
-        Product("Флешка 64GB", "Электроника", 2000.0, true),
-        Product("Блокнот", "Канцелярия", 300.0, true),
-        Product("Ручка", "Канцелярия", 50.0, false),
-        Product("Монитор", "Электроника", 25000.0, true)
-    )
-}
-```
-
-### Этап 5. Применение filter, map, sortedBy (20 мин)
-
-В `MainActivity` внутри `onCreate` получите список товаров и примените цепочки обработки. Результаты выведите в соответствующие `TextView`.
-
-```kotlin
-override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_main)
-
-    val products = getProducts()
-
-    // 1. Исходный список (для наглядности преобразуем в строку)
-    val originalText = products.joinToString("\n") { "${it.name} – ${it.price} руб. (${if (it.inStock) "в наличии" else "нет"})" }
-    findViewById<TextView>(R.id.textOriginal).text = originalText
-
-    // 2. Фильтр: только товары в наличии
-    val inStockProducts = products.filter { it.inStock }
-    val inStockText = inStockProducts.joinToString("\n") { "${it.name} – ${it.price} руб." }
-    findViewById<TextView>(R.id.textInStock).text = inStockText
-
-    // 3. Цепочка: отфильтровать электронику, отсортировать по цене и получить список строк с названием и ценой
-    val electronicsSorted = products
-        .filter { it.category == "Электроника" && it.inStock }
-        .sortedBy { it.price }
-        .map { "${it.name} – ${it.price} руб." }
-    val electronicsText = electronicsSorted.joinToString("\n")
-    findViewById<TextView>(R.id.textSorted).text = electronicsText
-}
-```
-
-### Этап 6. Запуск приложения (10 мин)
-
-Запустите приложение на эмуляторе или устройстве. Убедитесь, что все `TextView` заполнены корректными данными. Проверьте, что фильтрация и сортировка работают как ожидается.
-
-### Этап 7. Эксперименты (оставшееся время)
-
-Измените условия фильтрации или сортировки, добавьте ещё одну цепочку (например, отобразить все товары дешевле 2000 рублей, отсортированные по названию). Пронаблюдайте изменения.
-
----
-
-## 4. Полный код MainActivity (для справки)
+### 3. MainActivity.kt
 
 ```kotlin
 package com.example.myfirstapp
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
-import com.example.myfirstapp.models.Product
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import com.example.myfirstapp.models.AnimeFilm
 
 class MainActivity : AppCompatActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
 
-        val products = getProducts()
+        val films = getFilms()
 
-        // Исходный список
-        val originalText = products.joinToString("\n") {
-            "${it.name} – ${it.price} руб. (${if (it.inStock) "в наличии" else "нет"})"
+        val originalText = films.joinToString("\n") {
+            "${it.name} (${it.year}) - ${it.genre} - ★ ${it.rating}"
         }
         findViewById<TextView>(R.id.textOriginal).text = originalText
 
-        // Только в наличии
-        val inStockProducts = products.filter { it.inStock }
-        val inStockText = inStockProducts.joinToString("\n") { "${it.name} – ${it.price} руб." }
-        findViewById<TextView>(R.id.textInStock).text = inStockText
+        // Фильмы выше 8 звёзд
+        val taskResult = films
+            .filter { it.rating > 8.0 }
+            .sortedByDescending { it.year }
+            .map { "${it.name} - ★ ${it.rating} (${it.year})" }
 
-        // Электроника в наличии, отсортированная по цене
-        val electronicsSorted = products
-            .filter { it.category == "Электроника" && it.inStock }
-            .sortedBy { it.price }
-            .map { "${it.name} – ${it.price} руб." }
-        findViewById<TextView>(R.id.textSorted).text = electronicsSorted.joinToString("\n")
+        findViewById<TextView>(R.id.textInStock).text = taskResult.joinToString("\n")
+
+        // Фильмы по рейтингу
+        val FilmsRated = films
+            .sortedByDescending { it.rating }
+            .map { "${it.name} - ★ ${it.rating}" }
+
+            findViewById<TextView>(R.id.textSorted).text = "${FilmsRated.joinToString("\n")}"
     }
 
-    private fun getProducts(): List<Product> {
+    private fun getFilms(): List<AnimeFilm> {
         return listOf(
-            Product("Ноутбук", "Электроника", 75000.0, true),
-            Product("Мышь", "Электроника", 1500.0, true),
-            Product("Книга 'Котлин'", "Книги", 1200.0, false),
-            Product("Флешка 64GB", "Электроника", 2000.0, true),
-            Product("Блокнот", "Канцелярия", 300.0, true),
-            Product("Ручка", "Канцелярия", 50.0, false),
-            Product("Монитор", "Электроника", 25000.0, true)
+            AnimeFilm("Человек-бензопила: Арка Резе", "Тёмное фэнтези, экшен", 8.6, 2025),
+            AnimeFilm("Истребитель демонов: Бесконечная крепость", "Экшен, фэнтези", 8.5, 2025),
+            AnimeFilm("Магическая битва: Казнь", "Боевик, ужасы, фэнтези", 8.5, 2026),
+            AnimeFilm("Кейпоп-охотницы на демонов", "Мюзикл, фэнтези, боевик", 7.5, 2025),
+            AnimeFilm("Зверополис 2", "Детектив, комедия", 7.4, 2025),
+            AnimeFilm("Плохие парни 2", "Комедия, криминал", 7.0, 2025),
+            AnimeFilm("Элио", "Фантастика, приключения", 6.7, 2025)
         )
     }
 }
 ```
 
----
+## Ответы на контрольные вопросы
 
-## 5. Индивидуальные задания (вариативно)
+**1. Что возвращает функция `filter` – новый список или изменяет существующий?**  
 
-Выберите одну из предметных областей и реализуйте аналогичную обработку списка:
+`filter` всегда возвращает **новый список**. Она не меняет исходный, а создаёт отдельный список только с элементами, которые подходят под условие. Например, `list.filter { it > 5 }` вернёт новый список с числами больше 5, а старый останется без изменений.
 
-1. **Список фильмов** (название, жанр, рейтинг, год выпуска).  
-   - Показать фильмы с рейтингом выше 8.0.
-   - Отсортировать их по году выпуска.
-   - Вывести список названий и рейтингов.
+**2. В чём разница между `sortedBy` и `sortedByDescending`?**  
 
-2. **Список сотрудников** (имя, отдел, зарплата, стаж).  
-   - Показать сотрудников с зарплатой больше 100000.
-   - Отсортировать по стажу (по убыванию).
-   - Вывести имена и отделы.
+- `sortedBy` сортирует **по возрастанию** (от меньшего к большему).
+- `sortedByDescending` сортирует **по убыванию** (от большего к меньшему).
 
-3. **Список книг** (название, автор, год, количество страниц).  
-   - Показать книги, изданные после 2000 года.
-   - Отсортировать по количеству страниц.
-   - Вывести названия и авторов.
+**Пример:** `sortedBy { it.year }` → 2025, 2026. `sortedByDescending { it.year }` → 2026, 2025.
 
----
+**3. Как можно объединить несколько условий в `filter`?**  
 
-## 6. Контрольные вопросы
+Через логические операторы:
+- `&&` (И) — оба условия должны выполняться
+- `||` (ИЛИ) — хотя бы одно условие должно выполняться
 
-1. Что возвращает функция `filter` – новый список или изменяет существующий?
-2. В чём разница между `sortedBy` и `sortedByDescending`?
-3. Как можно объединить несколько условий в `filter`?
-4. Для чего используется функция `map`? Приведите пример.
-5. Что такое `joinToString` и как она работает?
+**Пример:** `filter { it.rating > 8.0 && it.year == 2025 }` — фильмы 2025 года с рейтингом выше 8.0.
 
----
+**4. Для чего используется функция `map`? Приведите пример.**  
 
-## 7. Требования к отчёту
+`map` преобразует каждый элемент коллекции во что-то другое и возвращает новый список с результатами. Например, было `[фильм1, фильм2]`, после `map` стало `["Название1", "Название2"]`. Удобно, когда нужно из объектов достать только конкретные поля или переделать их в строки для вывода.
 
-Отчёт должен содержать:
-- Титульный лист с названием работы, ФИО, группой.
-- Цель работы.
-- Листинг класса `Product` и `MainActivity` (с добавленными цепочками).
-- Скриншот работающего приложения (с видимыми результатами фильтрации и сортировки).
-- Ответы на контрольные вопросы.
-- Вывод по работе.
+**5. Что такое `joinToString` и как она работает?**  
 
----
+`joinToString` склеивает список в одну строку. Можно указать, что ставить между элементами — запятую, пробел, перенос строки (`\n`). В работе используется `joinToString("\n")`, чтобы каждый элемент списка выводился с новой строки в TextView.
 
-## 8. Возможные ошибки и их решение
+## Вывод
 
-- **Приложение падает с NullPointerException** – проверьте, что все `TextView` имеют правильные id в разметке.
-- **Не отображаются все товары** – убедитесь, что список не слишком велик для маленького экрана; можно поместить `TextView` в `ScrollView`.
-- **Сортировка работает неправильно** – проверьте, что для чисел используется правильный тип (Double, Int). Для строк сортировка лексикографическая.
-- **Не импортируются классы** – добавьте импорт `import com.example.myfirstapp.models.Product`.
+В ходе лабораторной работы был создан Android-проект, демонстрирующий применение функциональных методов обработки коллекций в Kotlin.
 
----
+Были изучены и применены на практике:
 
-**Успешной работы!**
+- **Функция `filter`** – для отбора фильмов с рейтингом выше 8.0
+- **Функция `sortedByDescending`** – для сортировки отфильтрованных фильмов по году выпуска (от новых к старым)
+- **Функция `map`** – для преобразования объектов в строки с названиями и рейтингами
+- **Цепочки вызовов** – комбинирование нескольких методов для решения комплексных задач
+- **Функция `joinToString`** – для форматированного вывода списков в TextView
+
+Для индивидуального задания **«Список фильмов»** был создан data class `AnimeFilm` с полями: название, жанр, рейтинг, год выпуска. Сформирован тестовый список из 7 популярных аниме-фильмов 2025-2026 годов с реальными рейтингами IMDb.
+
+В интерфейсе приложения реализовано три блока вывода:
+1. **Все фильмы** – исходный список для наглядности
+2. **Фильмы с рейтингом выше 8.0 (по году выпуска)** – результат выполнения индивидуального задания (цепочка `filter` → `sortedByDescending` → `map`)
+3. **Фильмы по рейтингу** – дополнительный пример, показывающий все фильмы, отсортированные по рейтингу
+
+Приложение успешно запускается на эмуляторе и корректно отображает все три списка, что подтверждает правильность применения функциональных методов обработки коллекций.
+
+Таким образом, цель работы достигнута: получены практические навыки использования `filter`, `map`, `sortedBy` для обработки списков объектов в Android-приложении на Kotlin.
+
+## Авторы
+
+- [@MaJaStudy](https://github.com/MaJaStudy)
+    - <sub><ins>Пахомов Виктор Васильевич №331</ins></sub>
