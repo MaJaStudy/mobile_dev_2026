@@ -187,11 +187,12 @@ class MainActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.textInStock).text = taskResult.joinToString("\n")
 
         // Фильмы по рейтингу
-        val FilmsRated = films
+        val filmsRated = films
+            .filter {it.year == 2025}
             .sortedByDescending { it.rating }
             .map { "${it.name} - ★ ${it.rating}" }
 
-            findViewById<TextView>(R.id.textSorted).text = "${FilmsRated.joinToString("\n")}"
+            findViewById<TextView>(R.id.textSorted).text = filmsRated.joinToString("\n")
     }
 
     private fun getFilms(): List<AnimeFilm> {
@@ -254,7 +255,7 @@ class MainActivity : AppCompatActivity() {
 В интерфейсе приложения реализовано три блока вывода:
 1. **Все фильмы** – исходный список для наглядности
 2. **Фильмы с рейтингом выше 8.0 (по году выпуска)** – результат выполнения индивидуального задания (цепочка `filter` → `sortedByDescending` → `map`)
-3. **Фильмы по рейтингу** – дополнительный пример, показывающий все фильмы, отсортированные по рейтингу
+3. **Фильмы 2025 года по рейтингу** – дополнительный пример, показывающий все фильмы 2025, отсортированные по рейтингу от наилучших к худшим.
 
 Приложение успешно запускается на эмуляторе и корректно отображает все три списка, что подтверждает правильность применения функциональных методов обработки коллекций.
 
