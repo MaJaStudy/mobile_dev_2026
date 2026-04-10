@@ -114,7 +114,7 @@
         android:text="Сброс"
         android:layout_marginBottom="24dp"/>
 
-    <!-- Блок 2: Ввод и отображение текста -->
+    <!-- Блок 2: Поле ввода и отображение текста -->
     <EditText
         android:id="@+id/editTextInput"
         android:layout_width="match_parent"
@@ -138,7 +138,7 @@
         android:textSize="18sp"
         android:layout_marginBottom="24dp"/>
 
-    <!-- Блок 3: ToDo List -->
+    <!-- Блок 3: ToDo список -->
     <EditText
         android:id="@+id/editTextTask"
         android:layout_width="match_parent"
@@ -161,7 +161,7 @@
         android:text="Очистить всё"
         android:layout_marginBottom="8dp"/>
 
-    <!-- Поле для индекса и кнопка удаления -->
+    <!-- Индивидуальное задание: поле для индекса и кнопка удаления -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -184,15 +184,22 @@
             android:text="Удалить по индексу"/>
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/textTasks"
+    <!-- ScrollView для прокручиваемого списка задач -->
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:text="@string/label_tasks"
-        android:textSize="18sp"
-        android:background="#F0F0F0"
-        android:padding="8dp"/>
+        android:background="#F0F0F0">
+
+        <TextView
+            android:id="@+id/textTasks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/label_tasks"
+            android:textSize="18sp"
+            android:padding="8dp"/>
+
+    </ScrollView>
 
 </LinearLayout>
 ```
