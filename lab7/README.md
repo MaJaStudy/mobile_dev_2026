@@ -1,155 +1,274 @@
 # Лабораторная работа №7
-## Добавление второго экрана (детали задачи). Переход по клику на элемент списка
 
-**Длительность:** 1 час 30 минут  
-**Цель работы:** Научиться создавать многоэкранные приложения, осуществлять переход между экранами с передачей данных через Intent, обрабатывать клики на элементах RecyclerView.
+<div align="center">
+
+**МИНИСТЕРСТВО НАУКИ И ВЫСШЕГО ОБРАЗОВАНИЯ РОССИЙСКОЙ ФЕДЕРАЦИИ**  
+**ФЕДЕРАЛЬНОЕ ГОСУДАРСТВЕННОЕ БЮДЖЕТНОЕ ОБРАЗОВАТЕЛЬНОЕ УЧРЕЖДЕНИЕ ВЫСШЕГО ОБРАЗОВАНИЯ**  
+**«САХАЛИНСКИЙ ГОСУДАРСТВЕННЫЙ УНИВЕРСИТЕТ»**
+
+<br>
+<br>
+
+Институт естественных наук и техносферной безопасности  
+Кафедра информатики  
+**Пахомов Виктор Васильевич**
+
+<br>
+<br>
+<br>
+<br>
+
+Лабораторная работа №7  
+**«Добавление второго экрана (детали задачи). Переход по клику на элемент списка»**  
+01.03.02 Прикладная математика и информатика  
+3 Курс
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<div align="right">
+Научный руководитель<br>
+Соболев Евгений Игоревич
+</div>
+
+<br>
+<br>
+<br>
+
+г. Южно-Сахалинск  
+2026 г.
+
+</div>
 
 ---
 
-## 1. Теоретическая справка
+## Цель работы
 
-### 1.1. Activity и Intent
-- **Activity** представляет один экран приложения. Для создания второго экрана нужно создать новую Activity.
-- **Intent** – это объект для выполнения различных операций, в частности для запуска другой Activity. Для передачи данных используется метод `putExtra()`.
+Научиться создавать многоэкранные приложения, осуществлять переход между экранами с передачей данных через Intent, обрабатывать клики на элементах RecyclerView. В результате модернизировать приложение ToDo-списка, добавив экран для просмотра и редактирования деталей задачи, а также реализовать удаление задачи с экрана деталей.
 
-Пример создания Intent и запуска:
-```kotlin
-val intent = Intent(this, DetailActivity::class.java)
-intent.putExtra("key", value)
-startActivity(intent)
-```
+## Индивидуальное задание
 
-Получение данных в целевой Activity:
-```kotlin
-val value = intent.getStringExtra("key")
-```
+Реализованы два индивидуальных задания:
 
-### 1.2. Передача сложных объектов
-Для передачи объектов данных рекомендуется реализовать интерфейс `Parcelable` или использовать `Serializable`. В Kotlin можно использовать `@Parcelize` (плагин `kotlin-parcelize`). В этой лабораторной для простоты передадим только текст задачи (String).
+1. **Удаление задачи с экрана деталей** – при нажатии на кнопку «Удалить» на экране деталей задача удаляется из списка, второй экран закрывается, список обновляется.  
+2. **Редактирование деталей задачи** – на экране деталей отображается неизменяемое имя задачи и редактируемое поле «Детали задачи». При нажатии «Сохранить» детали обновляются в списке и сохраняются в памяти.
 
-### 1.3. Обработка кликов в RecyclerView
-Существует несколько способов обработки кликов:
-- Передать лямбду в адаптер из Activity.
-- Использовать интерфейс слушателя.
-- Установить `OnClickListener` на корневой элемент в `onBindViewHolder`.
+При этом имя задачи и её детали не связаны – редактируются только детали. Кнопки на экране деталей расположены внизу для удобства использования.
 
-Рекомендуется передавать лямбду при создании адаптера:
-```kotlin
-adapter = TaskAdapter(tasks) { position ->
-    // обработка клика
-}
-```
+Весь функционал из лабораторной работы №6 (счётчик, поле ввода текста, добавление задач, удаление свайпом, удаление по индексу, очистка списка, чередование цветов карточек) сохранён.
 
-### 1.4. Создание новой Activity
-В Android Studio: `File -> New -> Activity -> Empty Activity`. Будет создан класс и соответствующий layout-файл.
+## Скриншоты
 
----
+![Главный экран с RecyclerView и карточками](screenshot_main_lab7.png)  
+*Рисунок 1 – Главный экран приложения: счётчик, поле ввода, список задач с чередованием цветов фона*
 
-## 2. Оборудование и программное обеспечение
+<br>
 
-- Персональный компьютер с ОС Windows / macOS / Linux.
-- Android Studio с проектом, содержащим реализацию списка задач из Лабораторной работы №6.
-- Эмулятор или реальное устройство.
+![Экран деталей задачи](screenshot_detail.png)  
+*Рисунок 2 – Экран деталей: неизменяемое имя задачи, поле для ввода деталей, кнопки внизу экрана*
 
----
+<br>
 
-## 3. Порядок выполнения работы
+![Структура проекта с новыми файлами](screenshot_structure_lab7.png)  
+*Рисунок 3 – Структура проекта: добавлены DetailActivity.kt, activity_detail.xml, Task.kt*
 
-### Этап 1. Подготовка проекта (5 мин)
+## Листинги
 
-Откройте проект `TodoApp`, который был создан в лабораторной работе №6. Убедитесь, что он успешно компилируется и корректно отображает список задач в `RecyclerView` с карточками.
-
-### Этап 2. Создание второго экрана (DetailActivity) (10 мин)
-
-Создайте новую Activity:
-- Нажмите правой кнопкой на пакет `com.example.todoapp` → `New` → `Activity` → `Empty Activity`.
-- Имя: `DetailActivity`
-- Layout name: `activity_detail`
-- Launcher Activity: не нужно, оставьте галочку снятой.
-
-Android Studio создаст два файла: `DetailActivity.kt` и `activity_detail.xml`.
-
-### Этап 3. Разметка экрана деталей (10 мин)
-
-Откройте `activity_detail.xml` и создайте простой интерфейс для отображения текста задачи. Добавьте `TextView` для задачи, кнопку "Назад" (или можно использовать системную кнопку Back). Также можно добавить заголовок.
-
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Детали задачи"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="24sp"/>
-
-    <TextView
-        android:id="@+id/textTaskDetail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:layout_marginBottom="16sp"/>
-
-    <Button
-        android:id="@+id/buttonBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Назад"
-        android:layout_gravity="center_horizontal"/>
-
-</LinearLayout>
-```
-
-### Этап 4. Код DetailActivity (10 мин)
-
-В `DetailActivity.kt` получите переданный текст задачи и отобразите его. Добавьте обработку кнопки "Назад" (завершает активность).
+### 1. Модель данных `Task.kt`
 
 ```kotlin
 package com.example.todoapp
 
+import java.io.Serializable
+
+data class Task(
+    val name: String,
+    var details: String
+) : Serializable
+```
+
+### 2. Файл разметки экрана деталей `activity_detail.xml`
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/textTaskName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="24sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Детали задачи:"
+        android:textSize="18sp"
+        android:layout_below="@id/textTaskName"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/editTaskDetails"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_below="@id/textTaskName"
+        android:layout_above="@id/buttonsLayout"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="16dp"
+        android:gravity="top"
+        android:inputType="textMultiLine"
+        android:hint="Введите детали задачи..."
+        android:minHeight="150dp" />
+
+    <LinearLayout
+        android:id="@+id/buttonsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp">
+
+        <Button
+            android:id="@+id/buttonSave"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Сохранить"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/buttonDelete"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Удалить"
+            android:backgroundTint="@android:color/holo_red_dark"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/buttonBack"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Назад" />
+    </LinearLayout>
+
+</RelativeLayout>
+```
+
+### 3. `DetailActivity.kt`
+
+```kotlin
+package com.example.todoapp
+
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 class DetailActivity : AppCompatActivity() {
 
+    private lateinit var textTaskName: TextView
+    private lateinit var editTaskDetails: EditText
+    private lateinit var buttonSave: Button
+    private lateinit var buttonDelete: Button
+    private lateinit var buttonBack: Button
+
+    private var taskPosition: Int = -1
+    private var originalDetails: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
 
-        val textTaskDetail = findViewById<TextView>(R.id.textTaskDetail)
-        val buttonBack = findViewById<Button>(R.id.buttonBack)
+        textTaskName = findViewById(R.id.textTaskName)
+        editTaskDetails = findViewById(R.id.editTaskDetails)
+        buttonSave = findViewById(R.id.buttonSave)
+        buttonDelete = findViewById(R.id.buttonDelete)
+        buttonBack = findViewById(R.id.buttonBack)
 
-        // Получаем данные из Intent
-        val taskText = intent.getStringExtra("task_text") ?: "Нет данных"
-        textTaskDetail.text = taskText
+        // Получаем переданные данные
+        taskPosition = intent.getIntExtra("task_position", -1)
+        val taskName = intent.getStringExtra("task_name") ?: ""
+        originalDetails = intent.getStringExtra("task_details") ?: ""
+
+        textTaskName.text = taskName
+        editTaskDetails.setText(originalDetails)
+
+        buttonSave.setOnClickListener {
+            val newDetails = editTaskDetails.text.toString()
+            if (newDetails != originalDetails) {
+                val resultIntent = Intent().apply {
+                    putExtra("action", "edit")
+                    putExtra("position", taskPosition)
+                    putExtra("new_details", newDetails)
+                }
+                setResult(Activity.RESULT_OK, resultIntent)
+                finish()
+            } else {
+                // Ничего не изменилось - просто закрываем
+                finish()
+            }
+        }
+
+        buttonDelete.setOnClickListener {
+            val resultIntent = Intent().apply {
+                putExtra("action", "delete")
+                putExtra("position", taskPosition)
+            }
+            setResult(Activity.RESULT_OK, resultIntent)
+            finish()
+        }
 
         buttonBack.setOnClickListener {
-            finish() // закрывает текущую активность и возвращает к предыдущей
+            finish()
         }
     }
 }
 ```
 
-### Этап 5. Добавление обработки клика в адаптер (15 мин)
-
-Откройте класс `TaskAdapter` из предыдущей лабораторной. Модифицируйте его так, чтобы он принимал лямбду-обработчик клика и вызывал её при клике на элемент списка.
+### 4. Адаптер `TaskAdapter.kt`
 
 ```kotlin
+package com.example.todoapp
+
+import android.graphics.Color
+import android.graphics.Paint
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.CheckBox
+import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.RecyclerView
+
 class TaskAdapter(
-    private val tasks: MutableList<String>,
-    private val onItemClick: (Int) -> Unit   // лямбда, принимающая позицию
+    private val tasks: MutableList<Task>,
+    private val onItemClick: (Int) -> Unit,
+    private val onItemLongClick: (Int) -> Unit
 ) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
-    class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textTask: TextView = itemView.findViewById(R.id.textTask)
         val checkTask: CheckBox = itemView.findViewById(R.id.checkTask)
     }
@@ -162,20 +281,35 @@ class TaskAdapter(
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         val task = tasks[position]
-        holder.textTask.text = task
+        holder.textTask.text = task.name
 
-        // Устанавливаем обработчик клика на всю карточку
-        holder.itemView.setOnClickListener {
-            onItemClick(position)
+        // Сброс зачёркивания
+        holder.textTask.paintFlags = holder.textTask.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+        holder.checkTask.isChecked = false
+
+        // Чередование фона карточки и цвета текста
+        val cardView = holder.itemView as CardView
+        if (position % 2 == 0) {
+            cardView.setCardBackgroundColor(Color.BLACK)
+            holder.textTask.setTextColor(Color.WHITE)
+        } else {
+            cardView.setCardBackgroundColor(Color.LTGRAY)
+            holder.textTask.setTextColor(Color.BLACK)
         }
 
-        // (Опционально) логика чекбокса из Лаб.6
+        // Обработка чекбокса (визуальное зачёркивание)
         holder.checkTask.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                holder.textTask.paintFlags = holder.textTask.paintFlags or android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
+                holder.textTask.paintFlags = holder.textTask.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             } else {
-                holder.textTask.paintFlags = holder.textTask.paintFlags and android.graphics.Paint.STRIKE_THRU_TEXT_FLAG.inv()
+                holder.textTask.paintFlags = holder.textTask.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
             }
+        }
+
+        holder.itemView.setOnClickListener { onItemClick(position) }
+        holder.itemView.setOnLongClickListener {
+            onItemLongClick(position)
+            true
         }
     }
 
@@ -183,92 +317,339 @@ class TaskAdapter(
 }
 ```
 
-### Этап 6. Обновление MainActivity для обработки кликов (15 мин)
-
-В `MainActivity.kt` измените создание адаптера, передав лямбду, которая будет запускать `DetailActivity` с передачей текста задачи.
+### 5. `MainActivity.kt`
 
 ```kotlin
-// Вместо прежнего создания:
-// adapter = TaskAdapter(tasks)
+package com.example.todoapp
 
-// Теперь:
-adapter = TaskAdapter(tasks) { position ->
-    val taskText = tasks[position]
-    val intent = Intent(this, DetailActivity::class.java)
-    intent.putExtra("task_text", taskText)
-    startActivity(intent)
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
+import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
+
+class MainActivity : AppCompatActivity() {
+
+    private var counter = 0
+    private val tasks = mutableListOf<Task>()
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var adapter: TaskAdapter
+    private lateinit var recyclerView: RecyclerView
+
+    // Лаунчер для получения результата из DetailActivity
+    private val detailActivityLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data = result.data
+            val action = data?.getStringExtra("action")
+            val position = data?.getIntExtra("position", -1) ?: -1
+
+            when (action) {
+                "edit" -> {
+                    val newDetails = data.getStringExtra("new_details") ?: ""
+                    if (position in tasks.indices) {
+                        tasks[position].details = newDetails
+                        adapter.notifyItemChanged(position)
+                        saveTasks()
+                        Toast.makeText(this, "Детали обновлены", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                "delete" -> {
+                    if (position in tasks.indices) {
+                        val removed = tasks.removeAt(position)
+                        adapter.notifyItemRemoved(position)
+                        saveTasks()
+                        Toast.makeText(this, "Удалено: ${removed.name}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        sharedPreferences = getSharedPreferences("TodoAppPrefs", Context.MODE_PRIVATE)
+        loadSavedData()
+
+        val textCounter = findViewById<TextView>(R.id.textCounter)
+        val buttonIncrement = findViewById<Button>(R.id.buttonIncrement)
+        val buttonReset = findViewById<Button>(R.id.buttonReset)
+
+        val editTextInput = findViewById<EditText>(R.id.editTextInput)
+        val buttonShow = findViewById<Button>(R.id.buttonShow)
+        val textEntered = findViewById<TextView>(R.id.textEntered)
+
+        val editTextTask = findViewById<EditText>(R.id.editTextTask)
+        val buttonAddTask = findViewById<Button>(R.id.buttonAddTask)
+        val buttonClearAll = findViewById<Button>(R.id.buttonClearAll)
+
+        val editTextIndex = findViewById<EditText>(R.id.editTextIndex)
+        val buttonDeleteTask = findViewById<Button>(R.id.buttonDeleteTask)
+
+        recyclerView = findViewById(R.id.recyclerViewTasks)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
+        adapter = TaskAdapter(
+            tasks = tasks,
+            onItemClick = { position ->
+                val task = tasks[position]
+                val intent = Intent(this, DetailActivity::class.java).apply {
+                    putExtra("task_position", position)
+                    putExtra("task_name", task.name)
+                    putExtra("task_details", task.details)
+                }
+                detailActivityLauncher.launch(intent)
+            },
+            onItemLongClick = { position ->
+                deleteTask(position)
+            }
+        )
+        recyclerView.adapter = adapter
+
+        // Удаление свайпом
+        val swipeCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean = false
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                deleteTaskWithUndo(position)
+            }
+        }
+        ItemTouchHelper(swipeCallback).attachToRecyclerView(recyclerView)
+
+        // --- Логика счётчика ---
+        updateCounterDisplay(textCounter)
+
+        buttonIncrement.setOnClickListener {
+            counter++
+            updateCounterDisplay(textCounter)
+            saveCounter()
+        }
+
+        buttonReset.setOnClickListener {
+            counter = 0
+            updateCounterDisplay(textCounter)
+            saveCounter()
+        }
+
+        // --- Поле для ввода текста (из Лаб.5) ---
+        buttonShow.setOnClickListener {
+            val inputText = editTextInput.text.toString()
+            if (inputText.isNotBlank()) {
+                textEntered.text = "Введённый текст: $inputText"
+            } else {
+                Toast.makeText(this, "Введите текст", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // --- Добавление задачи (имя) ---
+        buttonAddTask.setOnClickListener {
+            val taskName = editTextTask.text.toString()
+            if (taskName.isNotBlank()) {
+                val newTask = Task(taskName, "") // детали пока пустые
+                tasks.add(newTask)
+                adapter.notifyItemInserted(tasks.size - 1)
+                editTextTask.text.clear()
+                saveTasks()
+                Toast.makeText(this, "Задача добавлена", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Введите название задачи", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // --- Очистить всё ---
+        buttonClearAll.setOnClickListener {
+            tasks.clear()
+            adapter.notifyDataSetChanged()
+            saveTasks()
+            Toast.makeText(this, "Все задачи удалены", Toast.LENGTH_SHORT).show()
+        }
+
+        // --- Удаление по индексу ---
+        buttonDeleteTask.setOnClickListener {
+            val indexText = editTextIndex.text.toString()
+            if (indexText.isNotBlank()) {
+                val index = indexText.toIntOrNull()
+                if (index != null && index in tasks.indices) {
+                    val removed = tasks.removeAt(index)
+                    adapter.notifyItemRemoved(index)
+                    saveTasks()
+                    Toast.makeText(this, "Удалена задача: ${removed.name}", Toast.LENGTH_SHORT).show()
+                    editTextIndex.text.clear()
+                } else {
+                    Toast.makeText(this, "Неверный индекс. Доступно: 0..${tasks.size - 1}", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(this, "Введите индекс задачи", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun deleteTaskWithUndo(position: Int) {
+        val removedTask = tasks[position]
+        tasks.removeAt(position)
+        adapter.notifyItemRemoved(position)
+        saveTasks()
+
+        Snackbar.make(recyclerView, "Задача удалена", Snackbar.LENGTH_LONG)
+            .setAction("Отменить") {
+                tasks.add(position, removedTask)
+                adapter.notifyItemInserted(position)
+                saveTasks()
+            }
+            .show()
+    }
+
+    private fun deleteTask(position: Int) {
+        tasks.removeAt(position)
+        adapter.notifyItemRemoved(position)
+        saveTasks()
+        Toast.makeText(this, "Задача удалена", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun updateCounterDisplay(textView: TextView) {
+        textView.text = "Счётчик: $counter"
+    }
+
+    private fun saveCounter() {
+        sharedPreferences.edit().putInt("counter", counter).apply()
+    }
+
+    // Сохранение списка задач в SharedPreferences (имя|||детали, разделитель задач |||)
+    private fun saveTasks() {
+        val tasksString = tasks.joinToString("|||") { task ->
+            "${task.name}|${task.details}"
+        }
+        sharedPreferences.edit().putString("tasks", tasksString).apply()
+    }
+
+    // Загрузка списка задач из SharedPreferences
+    private fun loadSavedData() {
+        counter = sharedPreferences.getInt("counter", 0)
+        val tasksString = sharedPreferences.getString("tasks", "")
+        if (!tasksString.isNullOrEmpty()) {
+            tasks.clear()
+            val items = tasksString.split("|||")
+            for (item in items) {
+                val parts = item.split("|")
+                if (parts.size == 2) {
+                    tasks.add(Task(parts[0], parts[1]))
+                }
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (::adapter.isInitialized) {
+            adapter.notifyDataSetChanged()
+        }
+        findViewById<TextView>(R.id.textCounter)?.let { updateCounterDisplay(it) }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        saveCounter()
+        saveTasks()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        saveCounter()
+        saveTasks()
+    }
 }
 ```
 
-Не забудьте добавить импорт `import android.content.Intent`.
+### 6. Файл разметки элемента списка `item_task.xml`
 
-### Этап 7. Запуск и тестирование (10 мин)
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp">
 
-Запустите приложение. Добавьте несколько задач. Попробуйте нажать на любую карточку задачи. Должен открыться второй экран с текстом этой задачи. Нажмите "Назад" – вы вернётесь к списку.
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp">
 
-### Этап 8. Дополнительные улучшения (оставшееся время, 15 мин)
+        <TextView
+            android:id="@+id/textTask"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="18sp" />
 
-1. **Передача позиции и удаление с подтверждением**  
-   На экране деталей добавьте кнопку "Удалить", которая удаляет задачу из списка и возвращает на главный экран. Для этого можно использовать `startActivityForResult` или `ViewModel`, но проще передать позицию и использовать `setResult` с последующим обновлением в `onActivityResult`. Однако в современных приложениях рекомендуется использовать SharedViewModel или другой подход. В рамках лабораторной можно упрощённо: при удалении отправлять broadcast или сохранять результат в глобальной переменной – не очень хорошо. Лучше оставить как дополнительное задание.
+        <CheckBox
+            android:id="@+id/checkTask"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-2. **Редактирование задачи**  
-   Добавьте на экран деталей `EditText` с текущим текстом и кнопку "Сохранить". При сохранении изменения должны вернуться в список. Для этого можно использовать `startActivityForResult` (устаревший) или `ActivityResultContracts.StartActivityForResult` (новый API). Можно показать пример с `setResult`.
+    </LinearLayout>
 
-3. **Передача объекта Task (Parcelable)**  
-   Создайте data class `Task` с полями `text: String`, `isCompleted: Boolean`, `created: Long`. Реализуйте `Parcelable` с помощью аннотации `@Parcelize` (добавив плагин `kotlin-parcelize`). Передавайте объект целиком.
+</androidx.cardview.widget.CardView>
+```
 
----
+### 7. Зависимости в `build.gradle (Module: app)`
 
-## 4. Индивидуальные задания (вариативно)
+```gradle
+dependencies {
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+}
+```
 
-Выберите одно из заданий для самостоятельной реализации:
+## Ответы на контрольные вопросы
 
-1. **Удаление задачи с экрана деталей**  
-   Добавьте на экран деталей кнопку "Удалить". При нажатии задача удаляется из списка, второй экран закрывается, список обновляется. Для этого можно передать позицию задачи, а результат обработать в `onActivityResult` (или использовать современный `ActivityResultLauncher`).
+**1. Что такое Intent? Какие виды Intent существуют?**  
+Intent — объект для запуска компонентов (Activity, сервисов). Виды: явный (указывает конкретный класс) и неявный (описывает действие, систему выбирает компонент).
 
-2. **Редактирование задачи**  
-   На экране деталей отображайте `EditText` с текущим текстом и кнопку "Сохранить". После сохранения обновите текст задачи в списке и закройте экран.
+**2. Как передать данные из одной Activity в другую?**  
+Через методы `putExtra()` объекта Intent перед запуском. В целевой Activity данные получают через `getStringExtra()` и аналогичные методы.
 
-3. **Передача объекта данных**  
-   Создайте data class `Task` с полями: текст, дата создания, статус (выполнена/нет). Реализуйте `Parcelable`. Передавайте объект на второй экран и отображайте все его поля.
+**3. Какие способы обработки кликов на элементах RecyclerView вы знаете?**  
+Передача лямбды в адаптер, создание интерфейса-слушателя, установка слушателя в onBindViewHolder. Рекомендуемый — передача лямбды.
 
-4. **Анимация перехода**  
-   Добавьте кастомную анимацию перехода между экранами (overridePendingTransition).
+**4. Как создать новую Activity в Android Studio?**  
+ПКМ по пакету → New → Activity → Empty Activity. Указать имя, снять галочку Launcher Activity.
 
----
+**5. Для чего используется метод `finish()`?**  
+Закрывает текущую Activity, возвращая пользователя к предыдущей.
 
-## 5. Контрольные вопросы
+## Вывод
 
-1. Что такое Intent? Какие виды Intent существуют?
-2. Как передать данные из одной Activity в другую?
-3. Какие способы обработки кликов на элементах RecyclerView вы знаете?
-4. Как создать новую Activity в Android Studio?
-5. Для чего используется метод `finish()`?
+В ходе лабораторной работы №7 приложение ToDo-списка модернизировано: добавлен второй экран для просмотра и редактирования деталей задач. Реализованы индивидуальные задания — удаление задачи с экрана деталей и редактирование деталей (имя задачи остаётся неизменным). Кнопки на экране деталей расположены внизу для удобства. Данные (имя + детали) сохраняются в SharedPreferences и восстанавливаются после перезапуска без использования плагинов. Весь функционал лабораторной работы №6 (счётчик, добавление, удаление свайпом, удаление по индексу, очистка, чередование цветов карточек) сохранён. Цель работы достигнута.
 
----
+## Авторы
 
-## 6. Требования к отчёту
-
-Отчёт должен содержать:
-- Титульный лист с названием работы, ФИО, группой.
-- Цель работы.
-- Листинг файла `activity_detail.xml`.
-- Листинг `DetailActivity.kt`.
-- Листинг обновлённого `TaskAdapter.kt`.
-- Листинг `MainActivity.kt` с изменениями.
-- Скриншоты главного экрана и экрана деталей.
-- Ответы на контрольные вопросы.
-- Вывод по работе.
-
----
-
-## 7. Возможные ошибки и их решение
-
-- **При клике на элемент ничего не происходит** – проверьте, что лямбда передана в адаптер и что в `onBindViewHolder` вызывается `holder.itemView.setOnClickListener`.
-- **Второй экран открывается, но текст не отображается** – убедитесь, что ключ в `putExtra` и `getStringExtra` совпадают (например, `"task_text"`). Проверьте, не `null` ли значение.
-- **Ошибка компиляции: "Unresolved reference"** – импортируйте класс `Intent` (`import android.content.Intent`).
-- **При повороте экрана данные теряются** – это нормально для данной лабораторной, но можно упомянуть о необходимости сохранения состояния.
-
----
-
-**Успешной работы!**
+- [@MaJaStudy](https://github.com/MaJaStudy)
+    - <sub><ins>Пахомов Виктор Васильевич №331</ins></sub>
