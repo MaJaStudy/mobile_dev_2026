@@ -1,98 +1,95 @@
-# Лабораторная работа №8
-## Перенос логики списка задач из Activity в ViewModel. Использование StateFlow для хранения состояния
+# ОТЧЁТ ПО ЛАБОРАТОРНОЙ РАБОТЕ №8
 
-**Длительность:** 1 час 30 минут  
-**Цель работы:** Изучить архитектурный компонент ViewModel, научиться выносить логику и состояние UI из Activity, использовать StateFlow для реактивного обновления данных, обеспечить сохранение состояния при изменении конфигурации.
+<div align="center">
 
----
+**МИНИСТЕРСТВО НАУКИ И ВЫСШЕГО ОБРАЗОВАНИЯ РОССИЙСКОЙ ФЕДЕРАЦИИ**  
+**ФЕДЕРАЛЬНОЕ ГОСУДАРСТВЕННОЕ БЮДЖЕТНОЕ ОБРАЗОВАТЕЛЬНОЕ УЧРЕЖДЕНИЕ ВЫСШЕГО ОБРАЗОВАНИЯ**  
+**«САХАЛИНСКИЙ ГОСУДАРСТВЕННЫЙ УНИВЕРСИТЕТ»**
 
-## 1. Теоретическая справка
+<br>
+<br>
 
-### 1.1. ViewModel
-`ViewModel` – это компонент архитектуры Android, предназначенный для хранения и управления данными, связанными с UI, с учётом жизненного цикла. ViewModel переживает повороты экрана и другие изменения конфигурации, что предотвращает потерю данных.
+Институт естественных наук и техносферной безопасности  
+Кафедра информатики  
+**Пахомов Виктор Васильевич**
 
-Преимущества использования ViewModel:
-- Разделение ответственности (UI не занимается загрузкой/хранением данных).
-- Устойчивость к изменениям конфигурации.
-- Упрощение тестирования (логика изолирована от Android-зависимостей).
+<br>
+<br>
+<br>
+<br>
 
-### 1.2. StateFlow
-`StateFlow` – это поток данных из библиотеки Kotlin Coroutines, который всегда хранит последнее значение и уведомляет подписчиков о новых значениях. Является отличной альтернативой `LiveData` в чисто Kotlin-проектах, особенно при использовании корутин.
+Лабораторная работа №8  
+**«Перенос логики списка задач из Activity в ViewModel. Использование StateFlow для хранения состояния»**  
+01.03.02 Прикладная математика и информатика  
+3 Курс
 
-Особенности:
-- Холодный поток превращается в горячий: `StateFlow` всегда активен.
-- Имеет текущее значение (`value`).
-- Поддерживает корутины и операторы преобразования.
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 
-Для создания StateFlow обычно используют `MutableStateFlow` с начальным значением и предоставляют неизменяемый `StateFlow` наружу.
+<div align="right">
+Научный руководитель<br>
+Соболев Евгений Игоревич
+</div>
 
-### 1.3. Зависимости
-Для использования ViewModel и StateFlow добавьте в `build.gradle` (Module) следующие зависимости:
-```gradle
-dependencies {
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.7.0'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
-}
-```
-Также требуется плагин `kotlin-kapt` для работы с lifecycle (не обязательно для базового использования).
+<br>
+<br>
+<br>
 
-### 1.4. Сбор и подписка в Activity
-В Activity для получения ViewModel используется делегат `by viewModels()`. Для подписки на StateFlow в жизненном цикле Activity применяется `lifecycleScope` и `repeatOnLifecycle`.
+г. Южно-Сахалинск  
+2026 г.
 
-Пример:
-```kotlin
-class MainActivity : AppCompatActivity() {
-    private val viewModel: MainViewModel by viewModels()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.tasks.collect { tasks ->
-                    // обновление адаптера
-                }
-            }
-        }
-    }
-}
-```
+</div>
 
 ---
 
-## 2. Оборудование и программное обеспечение
+## Цель работы
 
-- Персональный компьютер с ОС Windows / macOS / Linux.
-- Android Studio с проектом `TodoApp` (результат выполнения лабораторной работы №7).
-- Эмулятор или реальное устройство.
+Изучить архитектурный компонент ViewModel, научиться выносить логику и состояние UI из Activity, использовать StateFlow для реактивного обновления данных, обеспечить сохранение состояния при изменении конфигурации (повороте экрана). В качестве индивидуального задания реализовать удаление задачи свайпом с возможностью отмены через Snackbar.
 
 ---
 
-## 3. Порядок выполнения работы
+## Индивидуальное задание
 
-### Этап 1. Подготовка проекта (5 мин)
+Реализовано **удаление задачи свайпом** влево или вправо с использованием `ItemTouchHelper`. При свайпе задача удаляется из списка, появляется `Snackbar` с кнопкой «Отменить». При нажатии на кнопку задача восстанавливается на прежнее место. Весь функционал из лабораторной работы №7 (список задач, переход на экран деталей, добавление задач) сохранён и перенесён в ViewModel.
 
-Откройте проект `TodoApp`, который был создан в лабораторной работе №7. Убедитесь, что проект компилируется и работает: список задач отображается, по клику открывается экран деталей.
+---
 
-### Этап 2. Добавление необходимых зависимостей (5 мин)
+## Скриншоты
 
-Откройте файл `app/build.gradle` и убедитесь, что в разделе `dependencies` присутствуют следующие строки (если нет – добавьте и выполните Sync):
+![Главный экран с RecyclerView и карточками](screenshot_main.png)  
+*Рисунок 1 – Главный экран приложения: список задач в виде карточек с чекбоксами*
 
-```gradle
-dependencies {
-    // ... другие зависимости
+<br>
 
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.7.0'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
-}
-```
+![Экран деталей задачи](screenshot_detail.png)  
+*Рисунок 2 – Экран деталей задачи с текстом и кнопкой «Назад»*
 
-### Этап 3. Создание ViewModel (15 мин)
+<br>
 
-Создайте новый класс `MainViewModel` в пакете `com.example.todoapp` (или в отдельном пакете `viewmodel`).
+![Удаление свайпом с Snackbar](screenshot_swipe_delete.png)  
+*Рисунок 3 – После свайпа появляется Snackbar с предложением отменить удаление*
+
+<br>
+
+![Поворот экрана – данные сохранены](screenshot_rotation.png)  
+*Рисунок 4 – После поворота экрана список задач сохраняется (ViewModel)*
+
+---
+
+## Листинги
+
+### 1. `MainViewModel.kt`
 
 ```kotlin
 package com.example.todoapp
@@ -104,20 +101,19 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class MainViewModel : ViewModel() {
 
-    // Приватный изменяемый StateFlow с начальным значением (пустой список)
-    private val _tasks = MutableStateFlow<List<String>>(emptyList())
+    private val _tasks = MutableStateFlow<List<Task>>(emptyList())
+    val tasks: StateFlow<List<Task>> = _tasks.asStateFlow()
 
-    // Публичный неизменяемый StateFlow для подписки из UI
-    val tasks: StateFlow<List<String>> = _tasks.asStateFlow()
+    fun setTasks(newTasks: List<Task>) {
+        _tasks.value = newTasks.toList()
+    }
 
-    // Добавление новой задачи
-    fun addTask(task: String) {
+    fun addTask(task: Task) {
         val currentList = _tasks.value.toMutableList()
         currentList.add(task)
         _tasks.value = currentList
     }
 
-    // Удаление задачи по индексу
     fun deleteTask(index: Int) {
         val currentList = _tasks.value.toMutableList()
         if (index in currentList.indices) {
@@ -126,130 +122,47 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    // Обновление текста задачи
-    fun updateTask(index: Int, newText: String) {
+    fun updateTaskDetails(index: Int, newDetails: String) {
         val currentList = _tasks.value.toMutableList()
         if (index in currentList.indices) {
-            currentList[index] = newText
+            currentList[index] = currentList[index].copy(details = newDetails)
             _tasks.value = currentList
         }
     }
 
-    // Вспомогательный метод для инициализации тестовыми данными (если нужно)
-    fun loadTestData() {
-        _tasks.value = listOf(
-            "Купить продукты",
-            "Сделать ДЗ по Android",
-            "Позвонить маме",
-            "Записаться к врачу"
-        )
-    }
-}
-```
-
-### Этап 4. Рефакторинг MainActivity (20 мин)
-
-В `MainActivity.kt` удалите объявление `tasks` как `mutableListOf`. Получите ViewModel с помощью делегата `by viewModels()`. Подпишитесь на `viewModel.tasks` и обновляйте адаптер при изменениях. Измените логику добавления задачи – вместо прямого добавления в список вызывайте `viewModel.addTask()`.
-
-Пример итогового кода `MainActivity.kt`:
-
-```kotlin
-package com.example.todoapp
-
-import android.content.Intent
-import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.launch
-
-class MainActivity : AppCompatActivity() {
-
-    private val viewModel: MainViewModel by viewModels()
-    private lateinit var adapter: TaskAdapter
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        val editTextTask = findViewById<EditText>(R.id.editTextTask)
-        val buttonAddTask = findViewById<Button>(R.id.buttonAddTask)
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewTasks)
-
-        // Настройка RecyclerView
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = TaskAdapter(
-            tasks = emptyList(), // адаптер будет обновляться через submitList или подобное
-            onItemClick = { position ->
-                val taskText = viewModel.tasks.value[position]
-                val intent = Intent(this, DetailActivity::class.java)
-                intent.putExtra("task_text", taskText)
-                startActivity(intent)
-            },
-            onItemLongClick = { position ->
-                viewModel.deleteTask(position)
-                Toast.makeText(this, "Задача удалена", Toast.LENGTH_SHORT).show()
-            }
-        )
-        recyclerView.adapter = adapter
-
-        // Подписка на изменения списка задач
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.tasks.collect { tasks ->
-                    adapter.updateData(tasks) // предполагаем, что у адаптера есть такой метод
-                }
-            }
-        }
-
-        // Добавление задачи
-        buttonAddTask.setOnClickListener {
-            val task = editTextTask.text.toString()
-            if (task.isNotBlank()) {
-                viewModel.addTask(task)
-                editTextTask.text.clear()
-            } else {
-                Toast.makeText(this, "Введите задачу", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        // Загрузим тестовые данные при первом запуске (если список пуст)
-        if (viewModel.tasks.value.isEmpty()) {
-            viewModel.loadTestData()
+    fun restoreTask(index: Int, task: Task) {
+        val currentList = _tasks.value.toMutableList()
+        if (index <= currentList.size) {
+            currentList.add(index, task)
+            _tasks.value = currentList
         }
     }
 }
 ```
 
-Обратите внимание: адаптер теперь не хранит список, а получает его извне через метод `updateData`. Нужно добавить этот метод в `TaskAdapter`.
+---
 
-### Этап 5. Модификация TaskAdapter (10 мин)
-
-Измените адаптер так, чтобы он не содержал внутреннего списка, а принимал список через конструктор и обновлялся методом `updateData`. Также добавьте обработку долгого нажатия.
+### 2. `TaskAdapter.kt`
 
 ```kotlin
 package com.example.todoapp
 
+import android.graphics.Color
+import android.graphics.Paint
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 
 class TaskAdapter(
-    private var tasks: List<String>,
+    private var tasks: List<Task>,
     private val onItemClick: (Int) -> Unit,
     private val onItemLongClick: (Int) -> Unit
 ) : RecyclerView.Adapter<TaskAdapter.TaskViewHolder>() {
 
-    class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class TaskViewHolder(val itemView: android.view.View) : RecyclerView.ViewHolder(itemView) {
         val textTask: TextView = itemView.findViewById(R.id.textTask)
         val checkTask: CheckBox = itemView.findViewById(R.id.checkTask)
     }
@@ -262,112 +175,734 @@ class TaskAdapter(
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         val task = tasks[position]
-        holder.textTask.text = task
+        holder.textTask.text = task.name
 
-        holder.itemView.setOnClickListener {
-            onItemClick(position)
+        // Сброс зачёркивания
+        holder.textTask.paintFlags = holder.textTask.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+        holder.checkTask.isChecked = false
+
+        // Чередование фона карточки и цвета текста
+        val cardView = holder.itemView as CardView
+        if (position % 2 == 0) {
+            cardView.setCardBackgroundColor(Color.BLACK)
+            holder.textTask.setTextColor(Color.WHITE)
+        } else {
+            cardView.setCardBackgroundColor(Color.LTGRAY)
+            holder.textTask.setTextColor(Color.BLACK)
         }
 
+        // Обработка чекбокса (визуальное зачёркивание)
+        holder.checkTask.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                holder.textTask.paintFlags = holder.textTask.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            } else {
+                holder.textTask.paintFlags = holder.textTask.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+            }
+        }
+
+        holder.itemView.setOnClickListener { onItemClick(position) }
         holder.itemView.setOnLongClickListener {
             onItemLongClick(position)
             true
-        }
-
-        // (Опционально) логика чекбокса из Лаб.6
-        holder.checkTask.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                holder.textTask.paintFlags = holder.textTask.paintFlags or android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
-            } else {
-                holder.textTask.paintFlags = holder.textTask.paintFlags and android.graphics.Paint.STRIKE_THRU_TEXT_FLAG.inv()
-            }
         }
     }
 
     override fun getItemCount(): Int = tasks.size
 
-    fun updateData(newTasks: List<String>) {
+    fun updateData(newTasks: List<Task>) {
         tasks = newTasks
         notifyDataSetChanged()
     }
 }
 ```
 
-### Этап 6. Обновление DetailActivity (5 мин)
+---
 
-Оставим `DetailActivity` без изменений – она получает текст задачи через Intent и отображает его. Для удаления с экрана деталей можно было бы использовать result API, но в рамках этой лабораторной мы реализуем удаление по долгому нажатию в списке, что уже добавлено.
+### 3. `MainActivity.kt`
 
-### Этап 7. Запуск и тестирование (10 мин)
+```kotlin
+package com.example.todoapp
 
-Запустите приложение. Проверьте:
-- При старте отображаются тестовые задачи.
-- Добавление новой задачи работает и список обновляется.
-- Удаление задачи по долгому нажатию работает (появляется Toast, задача исчезает).
-- При повороте экрана список задач сохраняется (ViewModel переживает поворот).
-- Клик по задаче открывает экран деталей с правильным текстом.
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
+import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 
-### Этап 8. Дополнительные улучшения (оставшееся время, 10 мин)
+class MainActivity : AppCompatActivity() {
 
-1. **Использование sealed class для состояния**  
-   Создайте класс `TasksState` (Loading, Success, Error). Вместо `List<String>` используйте `StateFlow<TasksState>`. При загрузке тестовых данных добавьте имитацию загрузки.
+    private val viewModel: MainViewModel by viewModels()
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var adapter: TaskAdapter
+    private lateinit var recyclerView: RecyclerView
 
-2. **SharedFlow для событий**  
-   Вместо прямого вызова Toast в Activity, можно использовать `SharedFlow` для отправки одноразовых событий (например, сообщение об ошибке). Создайте `MutableSharedFlow<String>` в ViewModel и подпишитесь на него в Activity.
+    private var deletedTask: Task? = null
+    private var deletedTaskPosition: Int = -1
 
-3. **Редактирование задачи**  
-   Добавьте возможность редактирования задачи через второй экран: передавайте позицию и текущий текст, а после редактирования возвращайте результат через `ActivityResultLauncher` и обновляйте задачу через `viewModel.updateTask()`.
+    // Лаунчер для получения результата из DetailActivity
+    private val detailActivityLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data = result.data
+            val action = data?.getStringExtra("action")
+            val position = data?.getIntExtra("position", -1) ?: -1
+
+            when (action) {
+                "edit" -> {
+                    val newDetails = data.getStringExtra("new_details") ?: ""
+                    if (position in 0 until viewModel.tasks.value.size) {
+                        viewModel.updateTaskDetails(position, newDetails)
+                        Toast.makeText(this, "Детали обновлены", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                "delete" -> {
+                    if (position in 0 until viewModel.tasks.value.size) {
+                        viewModel.deleteTask(position)
+                        Toast.makeText(this, "Задача удалена", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        sharedPreferences = getSharedPreferences("TodoAppPrefs", Context.MODE_PRIVATE)
+        loadSavedData()
+
+        val textCounter = findViewById<TextView>(R.id.textCounter)
+        val buttonIncrement = findViewById<Button>(R.id.buttonIncrement)
+        val buttonReset = findViewById<Button>(R.id.buttonReset)
+
+        val editTextInput = findViewById<EditText>(R.id.editTextInput)
+        val buttonShow = findViewById<Button>(R.id.buttonShow)
+        val textEntered = findViewById<TextView>(R.id.textEntered)
+
+        val editTextTask = findViewById<EditText>(R.id.editTextTask)
+        val buttonAddTask = findViewById<Button>(R.id.buttonAddTask)
+        val buttonClearAll = findViewById<Button>(R.id.buttonClearAll)
+
+        val editTextIndex = findViewById<EditText>(R.id.editTextIndex)
+        val buttonDeleteTask = findViewById<Button>(R.id.buttonDeleteTask)
+
+        recyclerView = findViewById(R.id.recyclerViewTasks)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
+        adapter = TaskAdapter(
+            tasks = emptyList(),
+            onItemClick = { position ->
+                val task = viewModel.tasks.value[position]
+                val intent = Intent(this, DetailActivity::class.java).apply {
+                    putExtra("task_position", position)
+                    putExtra("task_name", task.name)
+                    putExtra("task_details", task.details)
+                }
+                detailActivityLauncher.launch(intent)
+            },
+            onItemLongClick = { position ->
+                deleteTaskWithUndo(position)
+            }
+        )
+        recyclerView.adapter = adapter
+
+        // Подписка на изменения StateFlow
+        lifecycleScope.launch {
+            viewModel.tasks.collect { tasks ->
+                adapter.updateData(tasks)
+                saveTasks()
+            }
+        }
+
+        // Удаление свайпом
+        val swipeCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean = false
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                deleteTaskWithUndo(position)
+            }
+        }
+        ItemTouchHelper(swipeCallback).attachToRecyclerView(recyclerView)
+
+        // --- Логика счётчика ---
+        updateCounterDisplay(textCounter)
+
+        buttonIncrement.setOnClickListener {
+            counter++
+            updateCounterDisplay(textCounter)
+            saveCounter()
+        }
+
+        buttonReset.setOnClickListener {
+            counter = 0
+            updateCounterDisplay(textCounter)
+            saveCounter()
+        }
+
+        // --- Поле для ввода текста ---
+        buttonShow.setOnClickListener {
+            val inputText = editTextInput.text.toString()
+            if (inputText.isNotBlank()) {
+                textEntered.text = "Введённый текст: $inputText"
+            } else {
+                Toast.makeText(this, "Введите текст", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // --- Добавление задачи ---
+        buttonAddTask.setOnClickListener {
+            val taskName = editTextTask.text.toString()
+            if (taskName.isNotBlank()) {
+                val newTask = Task(taskName, "")
+                viewModel.addTask(newTask)
+                editTextTask.text.clear()
+                Toast.makeText(this, "Задача добавлена", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Введите название задачи", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // --- Очистить всё ---
+        buttonClearAll.setOnClickListener {
+            viewModel.setTasks(emptyList())
+            Toast.makeText(this, "Все задачи удалены", Toast.LENGTH_SHORT).show()
+        }
+
+        // --- Удаление по индексу ---
+        buttonDeleteTask.setOnClickListener {
+            val indexText = editTextIndex.text.toString()
+            if (indexText.isNotBlank()) {
+                val index = indexText.toIntOrNull()
+                if (index != null && index in 0 until viewModel.tasks.value.size) {
+                    val removed = viewModel.tasks.value[index]
+                    viewModel.deleteTask(index)
+                    Toast.makeText(this, "Удалена задача: ${removed.name}", Toast.LENGTH_SHORT).show()
+                    editTextIndex.text.clear()
+                } else {
+                    Toast.makeText(this, "Неверный индекс. Доступно: 0..${viewModel.tasks.value.size - 1}", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(this, "Введите индекс задачи", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // Загрузка тестовых данных (если нужно)
+        if (viewModel.tasks.value.isEmpty()) {
+            // Можно оставить пустым или загрузить тестовые
+            // viewModel.addTask(Task("Купить продукты", "Молоко, хлеб"))
+        }
+    }
+
+    private fun deleteTaskWithUndo(position: Int) {
+        val tasks = viewModel.tasks.value
+        if (position !in tasks.indices) return
+
+        deletedTask = tasks[position]
+        deletedTaskPosition = position
+
+        viewModel.deleteTask(position)
+
+        Snackbar.make(recyclerView, "Задача удалена: ${deletedTask?.name?.take(30)}", Snackbar.LENGTH_LONG)
+            .setAction("Отменить") {
+                deletedTask?.let {
+                    viewModel.restoreTask(deletedTaskPosition, it)
+                }
+                deletedTask = null
+                deletedTaskPosition = -1
+            }
+            .show()
+    }
+
+    // --- Счётчик и сохранение ---
+    private var counter = 0
+
+    private fun updateCounterDisplay(textView: TextView) {
+        textView.text = "Счётчик: $counter"
+    }
+
+    private fun saveCounter() {
+        sharedPreferences.edit().putInt("counter", counter).apply()
+    }
+
+    private fun saveTasks() {
+        val tasksString = viewModel.tasks.value.joinToString("|||") { task ->
+            "${task.name}|${task.details}"
+        }
+        sharedPreferences.edit().putString("tasks", tasksString).apply()
+    }
+
+    private fun loadSavedData() {
+        counter = sharedPreferences.getInt("counter", 0)
+        val tasksString = sharedPreferences.getString("tasks", "")
+        val loadedTasks = mutableListOf<Task>()
+        if (!tasksString.isNullOrEmpty()) {
+            val items = tasksString.split("|||")
+            for (item in items) {
+                val parts = item.split("|")
+                if (parts.size == 2) {
+                    loadedTasks.add(Task(parts[0], parts[1]))
+                }
+            }
+        }
+        viewModel.setTasks(loadedTasks)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        findViewById<TextView>(R.id.textCounter)?.let { updateCounterDisplay(it) }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        saveCounter()
+        saveTasks()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        saveCounter()
+        saveTasks()
+    }
+}
+```
 
 ---
 
-## 4. Индивидуальные задания (вариативно)
+### 4. `DetailActivity.kt`
 
-Выберите одно из заданий для самостоятельной реализации:
+```kotlin
+package com.example.todoapp
 
-1. **Sealed class для состояния загрузки**  
-   Реализуйте состояние `TaskState` (Loading, Success(List<String>), Error(String)). В ViewModel при "загрузке" тестовых данных добавьте задержку (например, через `delay` в корутине) и эмитируйте состояния. В Activity отображайте прогресс-бар или сообщение об ошибке.
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
+import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 
-2. **SharedFlow для уведомлений**  
-   Добавьте в ViewModel `MutableSharedFlow<String>` для отправки сообщений (например, "Задача добавлена", "Ошибка: пустая задача"). В Activity подпишитесь на этот поток и показывайте Toast или Snackbar.
+class MainActivity : AppCompatActivity() {
 
-3. **Редактирование с возвратом результата**  
-   Реализуйте редактирование задачи на втором экране с помощью `ActivityResultContracts.StartActivityForResult`. Передавайте позицию и текст, после редактирования возвращайте изменённый текст и вызывайте `viewModel.updateTask()`.
+    private val viewModel: MainViewModel by viewModels()
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var adapter: TaskAdapter
+    private lateinit var recyclerView: RecyclerView
 
-4. **Удаление свайпом**  
-   Добавьте возможность удаления задачи свайпом с помощью `ItemTouchHelper`. При свайпе вызывайте `viewModel.deleteTask(position)` и показывайте Snackbar с возможностью отмены.
+    private var deletedTask: Task? = null
+    private var deletedTaskPosition: Int = -1
+
+    // Лаунчер для получения результата из DetailActivity
+    private val detailActivityLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val data = result.data
+            val action = data?.getStringExtra("action")
+            val position = data?.getIntExtra("position", -1) ?: -1
+
+            when (action) {
+                "edit" -> {
+                    val newDetails = data.getStringExtra("new_details") ?: ""
+                    if (position in 0 until viewModel.tasks.value.size) {
+                        viewModel.updateTaskDetails(position, newDetails)
+                        Toast.makeText(this, "Детали обновлены", Toast.LENGTH_SHORT).show()
+                    }
+                }
+                "delete" -> {
+                    if (position in 0 until viewModel.tasks.value.size) {
+                        viewModel.deleteTask(position)
+                        Toast.makeText(this, "Задача удалена", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        sharedPreferences = getSharedPreferences("TodoAppPrefs", Context.MODE_PRIVATE)
+        loadSavedData()
+
+        val textCounter = findViewById<TextView>(R.id.textCounter)
+        val buttonIncrement = findViewById<Button>(R.id.buttonIncrement)
+        val buttonReset = findViewById<Button>(R.id.buttonReset)
+
+        val editTextInput = findViewById<EditText>(R.id.editTextInput)
+        val buttonShow = findViewById<Button>(R.id.buttonShow)
+        val textEntered = findViewById<TextView>(R.id.textEntered)
+
+        val editTextTask = findViewById<EditText>(R.id.editTextTask)
+        val buttonAddTask = findViewById<Button>(R.id.buttonAddTask)
+        val buttonClearAll = findViewById<Button>(R.id.buttonClearAll)
+
+        val editTextIndex = findViewById<EditText>(R.id.editTextIndex)
+        val buttonDeleteTask = findViewById<Button>(R.id.buttonDeleteTask)
+
+        recyclerView = findViewById(R.id.recyclerViewTasks)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
+        adapter = TaskAdapter(
+            tasks = emptyList(),
+            onItemClick = { position ->
+                val task = viewModel.tasks.value[position]
+                val intent = Intent(this, DetailActivity::class.java).apply {
+                    putExtra("task_position", position)
+                    putExtra("task_name", task.name)
+                    putExtra("task_details", task.details)
+                }
+                detailActivityLauncher.launch(intent)
+            },
+            onItemLongClick = { position ->
+                deleteTaskWithUndo(position)
+            }
+        )
+        recyclerView.adapter = adapter
+
+        // Подписка на изменения StateFlow
+        lifecycleScope.launch {
+            viewModel.tasks.collect { tasks ->
+                adapter.updateData(tasks)
+                saveTasks()
+            }
+        }
+
+        // Удаление свайпом
+        val swipeCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean = false
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                deleteTaskWithUndo(position)
+            }
+        }
+        ItemTouchHelper(swipeCallback).attachToRecyclerView(recyclerView)
+
+        // --- Логика счётчика ---
+        updateCounterDisplay(textCounter)
+
+        buttonIncrement.setOnClickListener {
+            counter++
+            updateCounterDisplay(textCounter)
+            saveCounter()
+        }
+
+        buttonReset.setOnClickListener {
+            counter = 0
+            updateCounterDisplay(textCounter)
+            saveCounter()
+        }
+
+        // --- Поле для ввода текста ---
+        buttonShow.setOnClickListener {
+            val inputText = editTextInput.text.toString()
+            if (inputText.isNotBlank()) {
+                textEntered.text = "Введённый текст: $inputText"
+            } else {
+                Toast.makeText(this, "Введите текст", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // --- Добавление задачи ---
+        buttonAddTask.setOnClickListener {
+            val taskName = editTextTask.text.toString()
+            if (taskName.isNotBlank()) {
+                val newTask = Task(taskName, "")
+                viewModel.addTask(newTask)
+                editTextTask.text.clear()
+                Toast.makeText(this, "Задача добавлена", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Введите название задачи", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // --- Очистить всё ---
+        buttonClearAll.setOnClickListener {
+            viewModel.setTasks(emptyList())
+            Toast.makeText(this, "Все задачи удалены", Toast.LENGTH_SHORT).show()
+        }
+
+        // --- Удаление по индексу ---
+        buttonDeleteTask.setOnClickListener {
+            val indexText = editTextIndex.text.toString()
+            if (indexText.isNotBlank()) {
+                val index = indexText.toIntOrNull()
+                if (index != null && index in 0 until viewModel.tasks.value.size) {
+                    val removed = viewModel.tasks.value[index]
+                    viewModel.deleteTask(index)
+                    Toast.makeText(this, "Удалена задача: ${removed.name}", Toast.LENGTH_SHORT).show()
+                    editTextIndex.text.clear()
+                } else {
+                    Toast.makeText(this, "Неверный индекс. Доступно: 0..${viewModel.tasks.value.size - 1}", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(this, "Введите индекс задачи", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // Загрузка тестовых данных (если нужно)
+        if (viewModel.tasks.value.isEmpty()) {
+            // Можно оставить пустым или загрузить тестовые
+            // viewModel.addTask(Task("Купить продукты", "Молоко, хлеб"))
+        }
+    }
+
+    private fun deleteTaskWithUndo(position: Int) {
+        val tasks = viewModel.tasks.value
+        if (position !in tasks.indices) return
+
+        deletedTask = tasks[position]
+        deletedTaskPosition = position
+
+        viewModel.deleteTask(position)
+
+        Snackbar.make(recyclerView, "Задача удалена: ${deletedTask?.name?.take(30)}", Snackbar.LENGTH_LONG)
+            .setAction("Отменить") {
+                deletedTask?.let {
+                    viewModel.restoreTask(deletedTaskPosition, it)
+                }
+                deletedTask = null
+                deletedTaskPosition = -1
+            }
+            .show()
+    }
+
+    // --- Счётчик и сохранение ---
+    private var counter = 0
+
+    private fun updateCounterDisplay(textView: TextView) {
+        textView.text = "Счётчик: $counter"
+    }
+
+    private fun saveCounter() {
+        sharedPreferences.edit().putInt("counter", counter).apply()
+    }
+
+    private fun saveTasks() {
+        val tasksString = viewModel.tasks.value.joinToString("|||") { task ->
+            "${task.name}|${task.details}"
+        }
+        sharedPreferences.edit().putString("tasks", tasksString).apply()
+    }
+
+    private fun loadSavedData() {
+        counter = sharedPreferences.getInt("counter", 0)
+        val tasksString = sharedPreferences.getString("tasks", "")
+        val loadedTasks = mutableListOf<Task>()
+        if (!tasksString.isNullOrEmpty()) {
+            val items = tasksString.split("|||")
+            for (item in items) {
+                val parts = item.split("|")
+                if (parts.size == 2) {
+                    loadedTasks.add(Task(parts[0], parts[1]))
+                }
+            }
+        }
+        viewModel.setTasks(loadedTasks)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        findViewById<TextView>(R.id.textCounter)?.let { updateCounterDisplay(it) }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        saveCounter()
+        saveTasks()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        saveCounter()
+        saveTasks()
+    }
+}
+```
 
 ---
 
-## 5. Контрольные вопросы
+### 5. `activity_detail.xml`
 
-1. Для чего нужен ViewModel? Как он помогает при повороте экрана?
-2. Чем StateFlow отличается от LiveData? В каких случаях предпочтительнее использовать StateFlow?
-3. Что такое `lifecycleScope` и `repeatOnLifecycle`? Зачем они нужны при подписке на StateFlow?
-4. Как обновить данные в StateFlow?
-5. Какие преимущества даёт вынос логики в ViewModel с точки зрения тестирования?
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/textTaskName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="24sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Детали задачи:"
+        android:textSize="18sp"
+        android:layout_below="@id/textTaskName"
+        android:layout_marginBottom="8dp" />
+
+    <EditText
+        android:id="@+id/editTaskDetails"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_below="@id/textTaskName"
+        android:layout_above="@id/buttonsLayout"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="16dp"
+        android:gravity="top"
+        android:inputType="textMultiLine"
+        android:hint="Введите детали задачи..."
+        android:minHeight="150dp" />
+
+    <LinearLayout
+        android:id="@+id/buttonsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp">
+
+        <Button
+            android:id="@+id/buttonSave"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Сохранить"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/buttonDelete"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Удалить"
+            android:backgroundTint="@android:color/holo_red_dark"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/buttonBack"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Назад" />
+    </LinearLayout>
+
+</RelativeLayout>
+```
 
 ---
 
-## 6. Требования к отчёту
+## Ответы на контрольные вопросы
 
-Отчёт должен содержать:
-- Титульный лист с названием работы, ФИО, группой.
-- Цель работы.
-- Листинг класса `MainViewModel`.
-- Листинг обновлённого `MainActivity.kt`.
-- Листинг обновлённого `TaskAdapter.kt`.
-- Скриншоты работающего приложения (список задач, поворот экрана – данные сохранились).
-- Ответы на контрольные вопросы.
-- Вывод по работе (что нового узнали, какие проблемы решили).
+**1. Для чего нужен ViewModel? Как он помогает при повороте экрана?**
+
+`ViewModel` – это компонент архитектуры Android, предназначенный для хранения и управления данными, связанными с UI. Основное преимущество – `ViewModel` переживает изменения конфигурации (повороты экрана, смену языка и т.д.). При повороте экрана Activity пересоздаётся, но `ViewModel` остаётся в памяти и данные не теряются. Это позволяет избежать сложного кода для сохранения и восстановления состояния (onSaveInstanceState).
+
+**2. Чем StateFlow отличается от LiveData? В каких случаях предпочтительнее использовать StateFlow?**
+
+| Характеристика | LiveData | StateFlow |
+|----------------|----------|-----------|
+| Платформа | Android-специфичный | Кроссплатформенный (Kotlin) |
+| Подписка | Только на MainThread | Любой корутинный контекст |
+| Обработка ошибок | Отсутствует | Есть (catch, retry) |
+| Операторы преобразования | Ограниченные | Полный набор Flow-операторов |
+| Jetpack Compose | Требуется адаптация | Нативная поддержка |
+
+`StateFlow` предпочтительнее при использовании корутин, в многоплатформенных проектах, при необходимости сложных манипуляций с потоками данных.
+
+**3. Что такое `lifecycleScope` и `repeatOnLifecycle`? Зачем они нужны при подписке на StateFlow?**
+
+- **`lifecycleScope`** – корутина, привязанная к жизненному циклу LifecycleOwner (Activity/Fragment). Она автоматически отменяется при уничтожении владельца.
+- **`repeatOnLifecycle`** – перезапускает корутину при достижении указанного состояния жизненного цикла (например, STARTED) и отменяет при уходе из него. Это предотвращает утечки памяти и ненужную фоновую работу.
+
+В данном проекте используется упрощённый вариант – `lifecycleScope.launch { viewModel.tasks.collect {...} }`. Более правильный подход – `repeatOnLifecycle`, но в рамках лабораторной работы допустим и упрощённый.
+
+**4. Как обновить данные в StateFlow?**
+
+Данные в `StateFlow` обновляются через его `MutableStateFlow` версию. В ViewModel создаётся приватный `MutableStateFlow` и публичный неизменяемый `StateFlow`. Обновление происходит через изменение значения `_tasks.value`:
+
+```kotlin
+private val _tasks = MutableStateFlow<List<String>>(emptyList())
+val tasks: StateFlow<List<String>> = _tasks.asStateFlow()
+
+fun addTask(task: String) {
+    val currentList = _tasks.value.toMutableList()
+    currentList.add(task)
+    _tasks.value = currentList  // автоматически уведомляет подписчиков
+}
+```
+
+**5. Какие преимущества даёт вынос логики в ViewModel с точки зрения тестирования?**
+
+- **Изоляция от Android-зависимостей** – ViewModel не содержит ссылок на Context, Activity, View. Это позволяет тестировать её без эмулятора или Robolectric.
+- **Предсказуемость** – вся бизнес-логика собрана в одном месте, легко проверить реакции на события.
+- **Тестирование корутин** – StateFlow легко тестировать с помощью `runTest` и `collect`.
+- **Разделение ответственности** – Activity отвечает только за отображение UI, ViewModel – за данные и логику.
 
 ---
 
-## 7. Возможные ошибки и их решение
+## Вывод
 
-- **При подписке на StateFlow список не обновляется** – проверьте, что используется `repeatOnLifecycle` и `collect` внутри корутины. Убедитесь, что в адаптере вызывается `updateData` с новым списком.
-- **ViewModel не сохраняет состояние после поворота** – убедитесь, что используете `by viewModels()`, а не создаёте экземпляр вручную.
-- **Ошибка "Cannot create an instance of class ViewModel"** – добавьте зависимость `implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0'` и выполните Sync.
-- **При удалении задачи по долгому нажатию адаптер не обновляется** – проверьте, что в `updateData` вызывается `notifyDataSetChanged()`.
-- **Корутины не работают** – добавьте импорт `import androidx.lifecycle.lifecycleScope` и `import androidx.lifecycle.repeatOnLifecycle`.
+В ходе выполнения лабораторной работы №8 проведена архитектурная модернизация приложения ToDo-списка. Основные результаты:
+
+1. **Создан `MainViewModel`**, который перенял на себя хранение списка задач и всю логику работы с данными (добавление, удаление, восстановление).
+
+2. **Внедрён `StateFlow`** для реактивного обновления UI. Activity подписывается на изменения списка и автоматически обновляет адаптер при любых изменениях в данных.
+
+3. **Решена проблема потери данных при повороте экрана** – ViewModel переживает изменение конфигурации, поэтому список задач сохраняется.
+
+4. **Реализовано индивидуальное задание** – удаление задачи свайпом с помощью `ItemTouchHelper`. При свайпе появляется `Snackbar` с кнопкой «Отменить», позволяющей восстановить случайно удалённую задачу.
+
+5. **Код стал более чистым и тестируемым** – Activity теперь отвечает только за отображение и события UI, вся бизнес-логика вынесена в ViewModel.
+
+Таким образом, цель работы достигнута: получены практические навыки работы с `ViewModel`, `StateFlow`, подпиской на потоки данных с учётом жизненного цикла, а также с `ItemTouchHelper` и `Snackbar` для удаления с отменой. Приложение соответствует современным архитектурным рекомендациям Google (MVVM) и готово к дальнейшему расширению (например, добавление базы данных Room, редактирование задач и т.д.).
 
 ---
 
-**Успешной работы!**
+## Авторы
+
+- [@MaJaStudy](https://github.com/MaJaStudy)
+    - <sub><ins>Пахомов Виктор Васильевич №331</ins></sub>
