@@ -1,96 +1,91 @@
-# Лабораторная работа №9
+# Отчёт по лабораторной работе №9
 ## Сохранение настроек темы. Тёмная/светлая тема в Compose
 
-**Длительность:** 1 час 30 минут  
-**Цель работы:** Изучить механизмы смены и сохранения темы приложения в Jetpack Compose, научиться использовать DataStore/SharedPreferences для хранения пользовательских настроек, реализовать переключение между тёмной и светлой темами.
+<div align="center">
+
+**МИНИСТЕРСТВО НАУКИ И ВЫСШЕГО ОБРАЗОВАНИЯ РОССИЙСКОЙ ФЕДЕРАЦИИ**  
+**ФЕДЕРАЛЬНОЕ ГОСУДАРСТВЕННОЕ БЮДЖЕТНОЕ ОБРАЗОВАТЕЛЬНОЕ УЧРЕЖДЕНИЕ ВЫСШЕГО ОБРАЗОВАНИЯ**  
+**«САХАЛИНСКИЙ ГОСУДАРСТВЕННЫЙ УНИВЕРСИТЕТ»**
+
+<br>
+<br>
+
+Институт естественных наук и техносферной безопасности  
+Кафедра информатики  
+**Пахомов Виктор Васильевич**
+
+<br>
+<br>
+<br>
+<br>
+
+Лабораторная работа №9  
+**«Сохранение настроек темы. Тёмная/светлая тема в Compose»**  
+01.03.02 Прикладная математика и информатика  
+3 Курс
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<div align="right">
+Научный руководитель<br>
+Соболев Евгений Игоревич
+</div>
+
+<br>
+<br>
+<br>
+
+г. Южно-Сахалинск  
+2026 г.
+
+</div>
 
 ---
 
-## 1. Теоретическая справка
+## Цель работы
 
-### 1.1. Material Theme в Compose
-Jetpack Compose использует `MaterialTheme` для обеспечения единого стиля приложения. `MaterialTheme` содержит три основные компоненты:
-- **ColorScheme** – цветовая палитра (primary, secondary, background, surface и т.д.)
-- **Typography** – стили текста
-- **Shapes** – формы компонентов
+Изучить механизмы смены и сохранения темы приложения в Jetpack Compose, научиться использовать DataStore для хранения пользовательских настроек, реализовать переключение между тёмной и светлой темами с сохранением выбора пользователя.
 
-### 1.2. Тёмная и светлая темы
-В Compose поддержка тёмной темы реализуется через предоставление двух наборов цветов: для светлой и для тёмной темы. Определить, какая тема активна в данный момент, можно с помощью `isSystemInDarkTheme()` – эта функция возвращает `true`, если на устройстве включена тёмная тема .
+## Индивидуальное задание
 
-### 1.3. Кастомная тема приложения
-Рекомендуется создать собственный composable-обёртку над `MaterialTheme`, которая будет принимать параметр `darkTheme` и выбирать соответствующую цветовую схему .
+Реализовано приложение с возможностью переключения между светлой и тёмной темами с сохранением выбора пользователя. Добавлена поддержка динамических цветов для Android 12+. Интерфейс включает кнопку переключения темы, карточку с примером компонентов и демонстрацию применения цветовой схемы.
 
-```kotlin
-@Composable
-fun AppTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
-) {
-    val colorScheme = if (darkTheme) DarkColors else LightColors
-    
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography(),
-        content = content
-    )
-}
-```
+## Скриншоты
 
-### 1.4. Сохранение настроек
-Для сохранения выбора пользователя можно использовать:
-- **SharedPreferences** – простой способ хранения пар ключ-значение
-- **DataStore** – современная замена SharedPreferences на основе Kotlin Coroutines и Flow
+![Главный экран в светлой теме](light_theme.png)  
+*Рисунок 1 – Главный экран приложения в светлой теме: кнопка переключения, карточка с примером*
 
-В этой лабораторной работе мы используем DataStore, так как он лучше интегрируется с корутинами и Compose.
+<br>
 
-### 1.5. Динамические цвета (Android 12+)
-На Android 12 и выше можно использовать динамические цвета, основанные на обоях устройства, через `dynamicDarkColorScheme()` и `dynamicLightColorScheme()` .
+![Главный экран в тёмной теме](dark_theme.png)  
+*Рисунок 2 – Главный экран приложения в тёмной теме: изменённая цветовая схема*
 
----
+<br>
 
-## 2. Оборудование и программное обеспечение
+![Структура проекта](project_structure.png)  
+*Рисунок 3 – Структура проекта: data, ui.theme, основные файлы*
 
-- Персональный компьютер с ОС Windows / macOS / Linux.
-- Android Studio с установленным SDK.
-- Эмулятор (API 21+) или реальное устройство.
+## Листинги
 
----
+### 1. `Color.kt`
+```kt
+package com.example.themeswitcherapp.ui.theme
 
-## 3. Порядок выполнения работы
-
-### Этап 1. Создание нового проекта (5 мин)
-
-Создайте новый проект с шаблоном **Empty Activity**:
-- **Name:** `ThemeSwitcherApp`
-- **Package name:** `com.example.themeswitcher`
-- **Language:** Kotlin
-- **Minimum SDK:** API 24
-- **UI toolkit:** Compose
-
-### Этап 2. Добавление зависимостей (5 мин)
-
-Откройте файл `app/build.gradle.kts` и добавьте зависимости для DataStore:
-
-```kotlin
-dependencies {
-    // ... существующие зависимости
-    
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
-}
-```
-
-Выполните синхронизацию проекта.
-
-### Этап 3. Создание цветовых схем (10 мин)
-
-Откройте файл `ui/theme/Color.kt`. Определите две цветовые схемы: для светлой и тёмной темы. Вы можете воспользоваться [Material Theme Builder](https://m3.material.io/theme-builder) для генерации своей палитры .
-
-```kotlin
-package com.example.themeswitcher.ui.theme
-
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
-import androidx.compose.material3.*
 
 // Светлая тема
 val LightColors = lightColorScheme(
@@ -133,12 +128,9 @@ val DarkColors = darkColorScheme(
 )
 ```
 
-### Этап 4. Создание DataStore для хранения настроек (15 мин)
-
-Создайте класс `SettingsManager` для управления настройками через DataStore. Создайте файл `SettingsManager.kt` в пакете `com.example.themeswitcher.data`:
-
-```kotlin
-package com.example.themeswitcher.data
+### 2. `SettingsManager.kt`
+```kt
+package com.example.themeswitcherapp.data
 
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -150,16 +142,16 @@ import kotlinx.coroutines.flow.map
 val Context.dataStore by preferencesDataStore(name = "settings")
 
 class SettingsManager(private val context: Context) {
-    
+
     companion object {
         val DARK_MODE_KEY = booleanPreferencesKey("dark_mode")
     }
-    
+
     val isDarkMode: Flow<Boolean> = context.dataStore.data
         .map { preferences ->
-            preferences[DARK_MODE_KEY] ?: false // по умолчанию светлая тема
+            preferences[DARK_MODE_KEY] ?: false
         }
-    
+
     suspend fun saveDarkMode(enabled: Boolean) {
         context.dataStore.edit { preferences ->
             preferences[DARK_MODE_KEY] = enabled
@@ -168,16 +160,13 @@ class SettingsManager(private val context: Context) {
 }
 ```
 
-### Этап 5. Создание ViewModel для темы (10 мин)
-
-Создайте `ThemeViewModel.kt` в пакете `com.example.themeswitcher.ui.theme`:
-
-```kotlin
-package com.example.themeswitcher.ui.theme
+### 3. `ThemeViewModel.kt`
+```kt
+package com.example.themeswitcherapp.ui.theme
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.themeswitcher.data.SettingsManager
+import com.example.themeswitcherapp.data.SettingsManager
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -186,14 +175,14 @@ import kotlinx.coroutines.launch
 class ThemeViewModel(
     private val settingsManager: SettingsManager
 ) : ViewModel() {
-    
+
     val isDarkTheme: StateFlow<Boolean> = settingsManager.isDarkMode
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = false
         )
-    
+
     fun toggleTheme() {
         viewModelScope.launch {
             val currentValue = isDarkTheme.value
@@ -203,12 +192,31 @@ class ThemeViewModel(
 }
 ```
 
-### Этап 6. Создание кастомной темы приложения (10 мин)
+### 4. `ThemeViewModelFactory.kt`
+```kt
+package com.example.themeswitcherapp.ui.theme
 
-Обновите файл `Theme.kt`, чтобы он использовал нашу ViewModel и DataStore. Добавьте поддержку динамических цветов для Android 12+ .
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.example.themeswitcherapp.data.SettingsManager
 
-```kotlin
-package com.example.themeswitcher.ui.theme
+class ThemeViewModelFactory(
+    private val settingsManager: SettingsManager
+) : ViewModelProvider.Factory {
+
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(ThemeViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return ThemeViewModel(settingsManager) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
+```
+
+### 5. `Theme.kt`
+```kt
+package com.example.themeswitcherapp.ui.theme
 
 import android.app.Activity
 import android.os.Build
@@ -229,7 +237,7 @@ fun ThemeSwitcherTheme(
 ) {
     val context = LocalContext.current
     val isDarkTheme by viewModel.isDarkTheme.collectAsState()
-    
+
     // Динамические цвета доступны на Android 12+
     val colorScheme = when {
         Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
@@ -238,7 +246,7 @@ fun ThemeSwitcherTheme(
         isDarkTheme -> DarkColors
         else -> LightColors
     }
-    
+
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
@@ -247,7 +255,7 @@ fun ThemeSwitcherTheme(
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !isDarkTheme
         }
     }
-    
+
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography(),
@@ -256,12 +264,9 @@ fun ThemeSwitcherTheme(
 }
 ```
 
-### Этап 7. Создание главного экрана (15 мин)
-
-Обновите `MainActivity.kt` и создайте простой интерфейс с переключателем темы.
-
-```kotlin
-package com.example.themeswitcher
+### 6. `MainActivity.kt`
+```kt
+package com.example.themeswitcherapp
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -273,17 +278,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.themeswitcher.data.SettingsManager
-import com.example.themeswitcher.ui.theme.ThemeSwitcherTheme
-import com.example.themeswitcher.ui.theme.ThemeViewModel
+import com.example.themeswitcherapp.data.SettingsManager
+import com.example.themeswitcherapp.ui.theme.ThemeSwitcherTheme
+import com.example.themeswitcherapp.ui.theme.ThemeViewModel
+import com.example.themeswitcherapp.ui.theme.ThemeViewModelFactory
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
-        // Инициализация SettingsManager
+
         val settingsManager = SettingsManager(this)
-        
+
         setContent {
             ThemeSwitcherTheme(
                 viewModel = viewModel(factory = ThemeViewModelFactory(settingsManager))
@@ -302,7 +307,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun ThemeScreen(viewModel: ThemeViewModel = viewModel()) {
     val isDarkTheme by viewModel.isDarkTheme.collectAsState()
-    
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -314,17 +319,17 @@ fun ThemeScreen(viewModel: ThemeViewModel = viewModel()) {
             text = "Текущая тема: ${if (isDarkTheme) "Тёмная" else "Светлая"}",
             style = MaterialTheme.typography.headlineMedium
         )
-        
+
         Spacer(modifier = Modifier.height(24.dp))
-        
+
         Button(
             onClick = { viewModel.toggleTheme() }
         ) {
             Text("Переключить тему")
         }
-        
+
         Spacer(modifier = Modifier.height(32.dp))
-        
+
         Card(
             modifier = Modifier.fillMaxWidth(),
             elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
@@ -343,23 +348,26 @@ fun ThemeScreen(viewModel: ThemeViewModel = viewModel()) {
                 )
             }
         }
-        
+
         Spacer(modifier = Modifier.height(24.dp))
-        
+
         Row(
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Button(
-                onClick = { /* Действие 1 */ },
+                onClick = { },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.secondary
-                )
+                ),
+                modifier = Modifier.weight(1f)
             ) {
                 Text("Кнопка 1")
             }
-            
+
             OutlinedButton(
-                onClick = { /* Действие 2 */ }
+                onClick = { },
+                modifier = Modifier.weight(1f)
             ) {
                 Text("Кнопка 2")
             }
@@ -368,132 +376,67 @@ fun ThemeScreen(viewModel: ThemeViewModel = viewModel()) {
 }
 ```
 
-### Этап 8. Создание фабрики для ViewModel (5 мин)
+## Ответы на контрольные вопросы
 
-Создайте `ThemeViewModelFactory.kt` для передачи зависимости в ViewModel:
+**1. Как в Compose определить, какая тема активна в данный момент (тёмная/светлая)?**
 
-```kotlin
-package com.example.themeswitcher.ui.theme
+В Compose определить активную тему можно несколькими способами:
+- Использовать `isSystemInDarkTheme()` – эта функция возвращает true, если на устройстве включена тёмная тема на системном уровне.
+- Через `MaterialTheme.colorScheme` – можно анализировать цветовую схему, например, сравнить цвет фона с ожидаемым.
+- В данном приложении используется `viewModel.isDarkTheme.collectAsState()`, который предоставляет сохранённое пользовательское предпочтение.
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import com.example.themeswitcher.data.SettingsManager
+**2. Что такое `MaterialTheme.colorScheme` и какие основные цвета он содержит?**
 
-class ThemeViewModelFactory(
-    private val settingsManager: SettingsManager
-) : ViewModelProvider.Factory {
-    
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(ThemeViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return ThemeViewModel(settingsManager) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
-}
-```
+`MaterialTheme.colorScheme` – это объект, содержащий цветовую палитру темы приложения. Основные цвета включают:
+- `primary` – основной цвет приложения, используется для акцентных элементов (кнопки, панели)
+- `onPrimary` – цвет элементов, отображаемых поверх primary (например, текст на кнопке)
+- `secondary` – второстепенный цвет для акцентов второго плана
+- `onSecondary` – цвет для элементов поверх secondary
+- `background` – основной цвет фона экранов
+- `onBackground` – цвет текста и иконок на фоне
+- `surface` – цвет поверхностей (карточек, диалогов, боковых панелей)
+- `onSurface` – цвет элементов на поверхности
+- `error` – цвет для сообщений об ошибках
+- `tertiary` – третичный акцентный цвет
 
-### Этап 9. Запуск и тестирование (10 мин)
+**3. Как сохранить выбор темы пользователя между сессиями работы приложения?**
 
-Запустите приложение. Проверьте:
-- Переключение темы работает и интерфейс мгновенно обновляется.
-- После закрытия и повторного открытия приложения выбранная тема сохраняется.
-- На Android 12+ должны применяться динамические цвета на основе обоев.
+Для сохранения выбора темы используются механизмы хранения данных:
+- **DataStore** – современное решение на основе Kotlin Coroutines и Flow, рекомендованное Google. Сохраняет пары ключ-значение асинхронно.
+- **SharedPreferences** – классический способ, синхронный, но также подходит для простых настроек.
 
-### Этап 10. Добавление экрана настроек (оставшееся время, 5 мин)
+В данной работе используется DataStore, где сохраняется булево значение `dark_mode`. При запуске приложения значение считывается из DataStore через Flow, а при переключении темы сохраняется новое значение.
 
-Для более сложного примера можно создать отдельный экран настроек с переключателем темы, используя `Switch` или `RadioButton`.
+**4. В чём разница между `isSystemInDarkTheme()` и сохранённым пользовательским выбором?**
 
-```kotlin
-@Composable
-fun SettingsScreen(viewModel: ThemeViewModel = viewModel()) {
-    val isDarkTheme by viewModel.isDarkTheme.collectAsState()
-    
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Text(
-            text = "Настройки",
-            style = MaterialTheme.typography.headlineLarge
-        )
-        
-        Spacer(modifier = Modifier.height(24.dp))
-        
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Тёмная тема",
-                style = MaterialTheme.typography.bodyLarge
-            )
-            Switch(
-                checked = isDarkTheme,
-                onCheckedChange = { viewModel.toggleTheme() }
-            )
-        }
-    }
-}
-```
+- `isSystemInDarkTheme()` – определяет системную настройку темы на устройстве пользователя. Это внешний фактор, который приложение может учитывать или игнорировать.
+- **Сохранённый пользовательский выбор** – это настройка, которую пользователь явно выбрал внутри приложения. Она имеет приоритет над системной, если приложение следует за выбором пользователя, а не за системой.
 
----
+В данном приложении используется исключительно сохранённый пользовательский выбор, что даёт пользователю полный контроль независимо от системных настроек.
 
-## 4. Индивидуальные задания (вариативно)
+**5. Что такое динамические цвета (dynamic color) и на каких версиях Android они доступны?**
 
-Выберите одно из заданий для самостоятельной реализации:
+Динамические цвета – это функция Android 12 (API 32) и выше, которая автоматически генерирует цветовую схему на основе обоев, установленных на устройстве пользователя. Система извлекает доминирующие цвета из изображения обоев и создаёт гармоничную палитру из primary, secondary, tertiary и других оттенков.
 
-1. **Три темы**  
-   Добавьте третью тему, например "Системная" (следовать за системой). Реализуйте выбор через `RadioButton` и сохраняйте настройку.
+Compose предоставляет функции `dynamicDarkColorScheme(context)` и `dynamicLightColorScheme(context)` для получения этих цветов. Если приложение поддерживает динамические цвета, оно автоматически адаптируется к стилю оформления устройства, создавая более целостный пользовательский опыт.
 
-2. **Выбор акцентного цвета**  
-   Добавьте возможность выбора акцентного цвета (primary) из нескольких предустановленных вариантов. Сохраняйте выбор в DataStore и применяйте соответствующую цветовую схему.
+## Вывод
 
-3. **Предпросмотр темы**  
-   Добавьте предварительный просмотр темы в настройках, показывающий примеры компонентов (кнопки, карточки, текст) в выбранной теме.
+В ходе выполнения лабораторной работы были достигнуты следующие результаты:
 
-4. **Анимация смены темы**  
-   Добавьте плавную анимацию при переключении темы (можно использовать `Crossfade`).
+1. **Изучены механизмы темизации в Jetpack Compose** – освоена работа с `MaterialTheme`, `ColorScheme`, создание пользовательских цветовых схем для светлой и тёмной темы. Созданы две полноценные цветовые палитры в соответствии с Material Design 3.
 
----
+2. **Реализовано переключение между темами** – создан интерфейс с кнопкой переключения, который мгновенно изменяет внешний вид всех компонентов приложения без перезапуска Activity. Текст на экране отображает текущую активную тему.
 
-## 5. Контрольные вопросы
+3. **Освоено сохранение пользовательских настроек** – с помощью DataStore реализовано сохранение выбранной темы между сессиями. После переключения темы и полного закрытия приложения выбранная настройка сохраняется и восстанавливается при следующем запуске.
 
-1. Как в Compose определить, какая тема активна в данный момент (тёмная/светлая)?
-2. Что такое `MaterialTheme.colorScheme` и какие основные цвета он содержит?
-3. Как сохранить выбор темы пользователя между сессиями работы приложения?
-4. В чём разница между `isSystemInDarkTheme()` и сохранённым пользовательским выбором?
-5. Что такое динамические цвета (dynamic color) и на каких версиях Android они доступны?
+4. **Реализована поддержка динамических цветов** – для устройств на Android 12+ автоматически применяются цвета на основе обоев системы, что делает приложение более интегрированным с системой.
 
----
+5. **Создан демонстрационный интерфейс** – разработан экран, показывающий применение цветов темы на различных компонентах: тексте, кнопках, карточках. Это наглядно демонстрирует влияние темы на все элементы приложения.
 
-## 6. Требования к отчёту
+Таким образом, цель работы полностью достигнута: получены практические навыки работы с `MaterialTheme`, `DataStore`, `ViewModel` и `StateFlow` в Jetpack Compose. Приложение готово к дальнейшему расширению, например, к добавлению дополнительных тем (системная, контрастная) или выбора акцентного цвета.
 
-Отчёт должен содержать:
-- Титульный лист с названием работы, ФИО, группой.
-- Цель работы.
-- Листинги всех созданных файлов: `Color.kt`, `Theme.kt`, `SettingsManager.kt`, `ThemeViewModel.kt`, `MainActivity.kt`.
-- Скриншоты приложения в светлой и тёмной темах.
-- Ответы на контрольные вопросы.
-- Вывод по работе (что нового узнали, как работает сохранение настроек).
+## Авторы
 
----
-
-## 7. Возможные ошибки и их решение
-
-- **DataStore не работает** – убедитесь, что добавлена зависимость `implementation "androidx.datastore:datastore-preferences:1.0.0"` и выполнен Sync.
-- **Тема не применяется при переключении** – проверьте, что `ThemeSwitcherTheme` обёрнут вокруг всего контента и что `collectAsState()` используется правильно.
-- **Ошибка "Cannot create an instance of ViewModel"** – убедитесь, что фабрика правильно зарегистрирована и передана в `viewModel()`.
-- **Динамические цвета не работают** – проверьте, что `Build.VERSION.SDK_INT >= Build.VERSION_CODES.S` и что на эмуляторе установлен Android 12+.
-
----
-
-## 8. Дополнительные материалы
-
-- [Material Theme Builder](https://m3.material.io/theme-builder) – для генерации цветовых схем .
-- [Официальная документация по темам в Compose](https://developer.android.com/jetpack/compose/themes) .
-- [Codelab: Material Theming with Jetpack Compose](https://developer.android.com/codelabs/basic-android-kotlin-compose-material-theming) .
-
-**Успешной работы!**
+- [@MaJaStudy](https://github.com/MaJaStudy)
+    - <sub><ins>Пахомов Виктор Васильевич №331</ins></sub>
